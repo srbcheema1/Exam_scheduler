@@ -1,50 +1,52 @@
 
 from srblib import Tabular
 
+from .room import Room
+
 class Session:
-    def __init__(self,name,teachers,capacity=0,**kwargs):
+    def __init__(self,name,room_list):
         self.name = name
-        self.teachers = teachers
-        self.capacity = capacity
-        self.extra = list(kwargs.keys())
-        self.__dict__.update(kwargs)
+        self.room_list = room_list
 
     def __str__(self):
-        a = [
-                ["name",self.name],
-                ["teachers",self.teachers],
-                ["capacity",self.capacity],
-            ]
-        for key in self.extra:
-            a.append([key,getattr(self,key)])
-
+        a = [[self.name]]
+        for room in self.room_list:
+            a[0].append(room.name)
         a = Tabular(a)
         return a.__str__()
 
     @staticmethod
-    def get_rooms(matrix):
+    def get_sessions(matrix,room_data):
         '''
-        input should be a Tabular object, or a path
+        input matrix should be a Tabular object, or a path
+        room_data should be a tabular object or a path
         '''
         if type(matrix) is str:
             matrix = Tabular(matrix)
+        if type(room_data) is str:
+            room_data = Room.get_rooms(room_data)
+
+        room_json = {}
+        for room in room_data:
+            room_json[room.name] = room
+
         ret = []
-        header = matrix[0]
-        cols = len(header)
+        header = matrix[0][1:] # remove first elem from header
+        cols = len(header) + 1
         if(cols < 2):
                 raise Exception('too few columns')
-        matrix = matrix[1:]
-        for row in matrix:
-            capacity = ""
-            kwargs = dict()
-            if(cols >= 3): capacity = row[2]
-            if(cols > 3):
-                i = 3
-                while i < cols:
-                    kwargs[header[i]] = row[i]
-                    i += 1
-            temp = Room(row[0],row[1],capacity,**kwargs)
+        for i in range(1,len(matrix)):
+            row = matrix[i]
+            room_list = []
+            for room in header:
+                need = row[room]
+                if need == 'y' or need == 'Y':
+                    if room in room_json:
+                        room_list.append(room_json[room])
+                    else:
+                        raise Exception('Room ' +room+ ' not present in rooms file')
+
+            temp = Session(row[0], room_list)
             ret.append(temp)
 
         return ret
-

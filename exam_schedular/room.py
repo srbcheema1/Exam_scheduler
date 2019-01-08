@@ -1,6 +1,7 @@
 
 from srblib import Tabular
-from util import credits_calc
+
+from .util import credits_calc
 
 class Room:
     def __init__(self,name,teachers,capacity=0,**kwargs):
@@ -9,12 +10,14 @@ class Room:
         self.capacity = capacity
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
+        self.teacher_alloted = []
 
     def __str__(self):
         a = [
                 ["name",self.name],
-                ["teachers",self.teachers],
+                ["teachers-required",self.teachers],
                 ["capacity",self.capacity],
+                ["teachers-alloted"," ".join([teacher.name for teacher in self.teacher_alloted])]
             ]
         for key in self.extra:
             a.append([key,getattr(self,key)])
@@ -33,7 +36,8 @@ class Room:
         header = matrix[0]
         cols = len(header)
         if(cols < 2):
-                raise Exception('too few columns')
+            raise Exception('too few columns')
+
         matrix = matrix[1:]
         for row in matrix:
             capacity = ""
@@ -48,4 +52,3 @@ class Room:
             ret.append(temp)
 
         return ret
-

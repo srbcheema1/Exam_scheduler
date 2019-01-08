@@ -18,7 +18,10 @@ from . import __version__, __mod_name__
 def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-v","--version",action='store_true',help='Display version number')
-    parser.add_argument("roll",nargs='?',help="your roll number")
+
+    subparsers = parser.add_subparsers(dest='first_arg')
+
+    parser.add_argument("-o","--output",help='Output file name, default output.xlsx')
 
     autocomplete(parser)
     return parser.parse_args()
