@@ -1,4 +1,3 @@
-
 from srblib import Tabular
 
 from .util import credits_calc
@@ -6,18 +5,18 @@ from .util import credits_calc
 class Room:
     def __init__(self,name,teachers,capacity=0,**kwargs):
         self.name = name
-        self.teachers = teachers
-        self.capacity = capacity
+        self.teachers = int(teachers)
+        self.capacity = int(capacity)
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
-        self.teacher_alloted = []
+        self.teachers_alloted = []
 
     def __str__(self):
         a = [
                 ["name",self.name],
                 ["teachers-required",self.teachers],
                 ["capacity",self.capacity],
-                ["teachers-alloted"," ".join([teacher.name for teacher in self.teacher_alloted])]
+                ["teachers-alloted"," ".join([teacher.name for teacher in self.teachers_alloted])]
             ]
         for key in self.extra:
             a.append([key,getattr(self,key)])

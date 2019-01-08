@@ -1,17 +1,19 @@
-
 from srblib import Tabular
-from util import credits_calc
+from srblib import debug
+
+from .util import credits_calc
 
 class Teacher:
     def __init__(self,idd,name,rank,dept="",desg="",**kwargs):
         self.idd = idd
         self.name = name
-        self.rank = rank
+        self.rank = int(rank)
         self.dept = dept
         self.desg = desg
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
         self._credits = credits_calc(rank)
+        self.alloted = {}
 
     def __str__(self):
         a = [
@@ -20,12 +22,20 @@ class Teacher:
                 ["rank",self.rank],
                 ["dept",self.dept],
                 ["desg",self.desg],
+                ["alloted","\n".join([str((x,self.alloted[x])) for x in self.alloted])],
             ]
+        if debug:
+            a.append(["credits",self._credits])
         for key in self.extra:
             a.append([key,getattr(self,key)])
 
         a = Tabular(a)
         return a.__str__()
+
+    def __lt__(self,obj):
+        if self._credits == obj._credits:
+            return self.rank > obj.rank
+        return self._credits < obj._credits
 
     @staticmethod
     def get_teachers(matrix):
