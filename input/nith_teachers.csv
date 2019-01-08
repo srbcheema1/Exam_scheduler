@@ -1,0 +1,123 @@
+name,rank,dept,designation
+Dr. V. K. Sharda,1,Civil,Professor
+Dr. R. K. Sharma,1,Civil,Professor
+Dr. Raman Parti,0,Civil,Professor (On Deputation)
+Dr. R.K. Dutta,1,Civil,Professor
+Dr. Pardeep Kumar,2,Civil,Associate Professor
+Dr. R.S. Banshtu,2,Civil,Associate Professor
+Dr. Vijay Shankar Dogra,0,Civil,Associate Professor (HoD)
+Dr. Vijay Kumar Bansal,2,Civil,Associate Professor
+Dr. Umesh Kumar Pandey,3,Civil,Assistant Professor
+Dr. Chander Prakash,3,Civil,Assistant Professor
+Dr. Hemant Kumar Vinayak,3,Civil,Assistant Professor
+Dr. Dharmendra,3,Civil,Assistant Professor
+Dr. Sunil Sharma,3,Civil,Assistant Professor
+Dr. K. Nallasivam,3,Civil,Assistant Professor
+Dr. Amrit Kumar Roy,3,Civil,Assistant Professor
+Dr. Lalit Kumar Awasthi,0,Cse,"Professor (Director,NIT Jalandhar)"
+Dr. Narottam Chand,2,Cse,Associate Professor
+Dr. Mrs. Kamlesh Dutta,0,Cse,(HOD) Associate Professor
+Dr. T. P. Sharma,2,Cse,Associate Professor
+Dr. Siddhartha Chauhan,3,Cse,Assistant Professor
+Dr. Naveen Chauhan,3,Cse,Assistant Professor
+Sh. Rajeev Kumar,3,Cse,Assistant Professor
+Dr. Pardeep Singh,3,Cse,Assistant Professor
+Sh. Nitin Gupta,3,Cse,Assistant Professor
+Dr. Ms. Madhu Kumari,3,Cse,Assistant Professor
+Dr. Lokesh Chouhan,3,Cse,Assistant Professor
+Dr. Jatoth Chandrashekar,3,Cse,Assistant Professor
+Dr. N. S. Thakur,0,Chemical,(HOD) Professor
+Dr. Leela Manohar Aeshala,3,Chemical,Assistant Professor
+Dr. Radhe Shyam,3,Chemical,Assistant Professor
+Dr. Tapas Palai,3,Chemical,Assistant Professor
+Dr. Vinod Kumar Kapoor,1,Ece,Professor
+Dr. (Mrs.) Rajeevan Chandel,1,Ece,Professor
+Er. K.S. Pandey,2,Ece,Associate Professor
+Dr. Surender Soni,0,Ece,Associate Professor (HoD)
+Dr. Ashok kumar,2,Ece,Associate Professor
+Dr (Mrs.) Gargi Khanna,2,Ece,Associate Professor
+Dr. Ashwani Rana,2,Ece,Associate Professor
+Dr. Krishan Kumar,3,Ece,Assistant Professor
+Sh. Manoranjan Rai Bharti,3,Ece,Assistant Professor
+Sh. Gagnesh Kumar,3,Ece,Assistant Professor
+Sh. Vinod Kumar,3,Ece,Assistant Professor
+Sh. Rakesh Sharma,3,Ece,Assistant Professor
+Dr. Philemon Daniel,3,Ece,Assistant Professor
+Dr. Rohit Dhiman,3,Ece,Assistant Professor
+Dr. Anuradha,3,Ece,Assistant Professor
+Dr. Yog Raj Sood,1,EEE,Professor
+Dr. Sushil Chauhan,1,EEE,Professor
+Dr. Ram Naresh Sharma,1,EEE,Professor
+Dr. Ashwani Kumar Chandel,1,EEE,Professor
+Dr. Zakir Hussain,0,EEE,Associate Professor (HoD)
+Dr. Ravinder Nath,2,EEE,Associate Professor
+Dr. Veena Sharma,2,EEE,Associate Professor
+Dr. R. K. Jarial,2,EEE,Associate Professor
+Dr. Bharat Bhushan Sharma,2,EEE,Associate Professor
+Dr. O. P. Rahi,2,EEE,Associate Professor
+Dr. Himesh Handa,3,EEE,Assistant Professor
+Dr. Amit Kaul,3,EEE,Assistant Professor
+Sh. Rajesh Kumar,3,EEE,Assistant Professor
+Ms. Bharti Kaul,3,EEE,Assistant Professor
+Dr. Manisha Sharma,3,EEE,Assistant Professor
+Dr. Chandrasekaran Subramanian,3,EEE,Assistant Professor
+Dr. Vinod Yadava,1,Mech,Professor
+Dr. Rakesh Sehgal,0,Mech,Professor (On Deputation)
+Dr. Sunand Kumar,0,Mech,Professor (HoD)
+Dr. Anoop Kumar,1,Mech,Professor
+Dr. Rajesh Sharma,2,Mech,Associate Professor
+Dr. Rajiv Kumar Sharma,2,Mech,Associate Professor
+Dr. Somesh Sharma,2,Mech,Associate Professor
+Dr. Sant Ram Chauhan,2,Mech,Associate Professor
+Dr. Prashant Kumar Dhiman,2,Mech,Associate Professor
+Dr. Siddharth,3,Mech,Assistant Professor
+Dr. Varun Goel,3,Mech,Assistant Professor
+Dr. Debasish Das,3,Mech,Assistant Professor
+Dr. Mohit Pant,3,Mech,Assistant Professor
+Dr. Santosh B. Bopche,3,Mech,Assistant Professor
+Dr. Santosh Kumar Guguloth,3,Mech,Assistant Professor
+Dr. A. S. Singha,1,Chemical,Professor
+Dr. Pamita Awasthi,2,Chemical,Associate Professor
+Dr. Bharti Gaur,0,Chemical,Associate Professor (HoD)
+Dr. Raj Kaushal,3,Chemical,Assistant Professor
+Dr. Kalyan Sundar Ghosh,3,Chemical,Assistant Professor
+Dr. Jaibir Kherb,3,Chemical,Assistant Professor
+Dr. Jai Prakash,3,Chemical,Assistant Professor
+Dr. Y.D Sharma,1,Math,Professor
+Dr. Sunil,1,Math,Professor
+Dr. Ramesh Kumar Vats,0,Math,Associate Professor (HoD)
+Dr. Pawan Kr. Sharma,3,Math,Assistant Professor
+Dr. Suket Kumar,3,Math,Assistant Professor
+Dr. Rajesh Kumar Sharma,3,Math,Assistant Professor
+Dr. Abhishek Singh,3,Math,Assistant Professor
+Dr. Talari Ganesh,3,Math,Assistant Professor
+Dr. Subhash Chand,0,Physics,Associate Professor (HoD)
+Dr. Arvind Kumar,2,Physics,Associate Professor
+Dr. Kuldeep Kr. Sharma,2,Physics,Associate Professor
+Dr. Rajesh Kumar,3,Physics,Assistant Professor
+Dr. Vimal Sharma,3,Physics,Assistant Professor
+Dr. Piar Chand,1,Humanity,Professor
+Dr. Yogesh Gupta,0,Humanity,Associate Professor (HoD)
+Dr. Saroj Thakur,3,Humanity,Assistant Professor
+Dr. Manoj Sharma,3,Humanity,Assistant Professor
+Dr. Vivek Tiwari,3,Humanity,Assistant Professor
+Dr. Mohd. Adil,3,Humanity,Assistant Professor
+Dr. Sunder Kala Negi,3,Humanity,Assistant Professor
+Dr. Manoj Kumar Yadav,3,Humanity,Assistant Professor
+Dr. Minakshi Jain,0,Archi,Professor (On Deputation)
+Dr. Bhanu Marwaha,0,Archi,Professor (HoD)
+Dr. I. P. Singh,2,Archi,Associate Professor
+Ms. Amanjeet Kaur,3,Archi,Assistant Professor
+Dr. Amitava Sarkar,3,Archi,Assistant Professor
+Ms. Vandna Sharma,3,Archi,Assistant Professor
+Ar. Venu Shree,3,Archi,Assistant Professor
+Ar. Sandeep Sharma,3,Archi,Assistant Professor
+Ar. Puneet Sharma,3,Archi,Assistant Professor
+Ar. Aniket Sharma,3,Archi,Assistant Professor
+Ar. Neetu Kapoor,3,Archi,Assistant Professor
+Dr. Narender Singh Thakur,0,CEEE,Professor (HoD)
+Dr. Surjeet Singh Katoch,2,CEEE,Associate Professor
+Dr. Mamta Awasthi,3,CEEE,Assistant Professor
+Dr. Ravi Kumar,0,CMSE,Professor (HoD)
+Dr. Vishal Singh,1,CMSE,Associate Professor
+Dr. Vikram Verma,2,CMSE,Assistant Professor
