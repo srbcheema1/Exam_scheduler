@@ -1,0 +1,3 @@
+include exam_scheduler
+include requirements.txt
+include README.md

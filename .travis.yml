@@ -1,0 +1,20 @@
+language: python
+python:
+    - '3.5'
+
+sudo: true
+
+matrix:
+    - os: linux
+      env:
+      global:
+          - HELLO='hello world'
+
+
+script:
+  - python3 -m pip install setuptools
+  - python3 setup.py sdist bdist
+  - python3 setup.py install
+  - exam_scheduler --help
+  - exam_scheduler
+  - pytest
