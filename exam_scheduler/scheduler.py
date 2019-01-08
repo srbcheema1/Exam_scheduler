@@ -60,6 +60,7 @@ class Scheduler:
         matrix = [["Name of Faculty Member","Designation","Dept"]]
         for session in session_list:
             matrix[0].append(session.name)
+        matrix[0].append("Total")
 
         for teacher in teacher_list:
             teacher_row = [teacher.name,teacher.desg,teacher.dept]
@@ -68,6 +69,7 @@ class Scheduler:
                     teacher_row.append(teacher.alloted[session.name])
                 else:
                     teacher_row.append('-')
+            teacher_row.append(len(teacher.alloted))
             matrix.append(teacher_row)
 
         sheet = Tabular(matrix)

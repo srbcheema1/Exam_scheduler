@@ -1,4 +1,6 @@
+import sys
 
+from srblib import Colour
 from srblib import Tabular
 
 from .room import Room
@@ -44,7 +46,9 @@ class Session:
                     if room in room_json:
                         room_list.append(room_json[room])
                     else:
-                        raise Exception('Room ' +room+ ' not present in rooms file')
+                        # raise Exception('Room ' +room+ ' not present in rooms file')
+                        Colour.print('Room ' + room + ' not present in room list',Colour.RED)
+                        sys.exit()
 
             temp = Session(row[0], room_list)
             ret.append(temp)
