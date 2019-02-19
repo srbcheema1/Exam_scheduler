@@ -4,7 +4,7 @@ from srblib import abs_path
 from srblib import SrbJson
 
 config_file_path = abs_path('~/.config/exam_scheduler/config.json')
-default_output_xlsx_path = abs_path('./output.xlsx')
+default_output_xlsx_path = abs_path('./output.xls')
 
 _default_room_list = None
 _default_teacher_list = None

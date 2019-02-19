@@ -4,6 +4,16 @@ from .util import credits_calc
 
 class Room:
     def __init__(self,name,teachers,capacity=0,**kwargs):
+        '''
+        format:
+            required positional params:
+                name - name of room
+                teachers - number of teachers
+            optional parameters:
+                capacity - capacity of students (default)
+            extra:
+                kwargs - may include any property
+        '''
         self.name = name
         self.teachers = int(teachers)
         self.capacity = int(capacity)
@@ -39,7 +49,7 @@ class Room:
 
         matrix = matrix[1:]
         for row in matrix:
-            capacity = ""
+            capacity = 0
             kwargs = dict()
             if(cols >= 3): capacity = row[2]
             if(cols > 3):

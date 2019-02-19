@@ -1,7 +1,7 @@
 import heapq
 
 class PriorityQueue:
-    def __init__(self, data=None, key=lambda x:float(x._credits)):
+    def __init__(self, data=None, key=lambda x:x):
         self.empty = True
         self.key = key
         if data:
@@ -16,8 +16,15 @@ class PriorityQueue:
         self.empty = False
 
     def pop(self):
+        if(len(self._data) == 0): raise Exception('queue empty !! unable to pop')
         ret = heapq.heappop(self._data)[1]
         if(len(self._data) == 0): self.empty = True
+        return ret
+
+    def top(self):
+        if(len(self._data) == 0): raise Exception('queue empty !! unable to top')
+        ret = heapq.heappop(self._data)[1]
+        heapq.heappush(self._data, (self.key(ret), ret))
         return ret
 
     def __len__(self):

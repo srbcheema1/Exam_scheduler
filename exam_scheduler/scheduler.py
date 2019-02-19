@@ -38,12 +38,24 @@ class Scheduler:
             configure_path(var_name)
             Colour.print('Using ' + var_name + ' : ' + Colour.END + getattr(self,var_name), Colour.GREEN)
 
-    def schedule(self,output_path=default_output_xlsx_path):
-        teacher_list_for_pq = randomize(Teacher.get_teachers(self.teacher_list))
-        pq = PriorityQueue(teacher_list_for_pq)
 
+
+    def schedule(self,output_path=default_output_xlsx_path,reserved=0):
         teacher_list = Teacher.get_teachers(self.teacher_list)
+        teacher_list_for_pq = randomize(Teacher.get_teachers(self.teacher_list))
+        pq = PriorityQueue(teacher_list_for_pq,key=lambda x: float(x._credits))
         session_list = Session.get_sessions(self.schedule_list,self.room_list)
+
+        for session in session_list: # reserve
+            done_list = []
+            for j in range(reserved)
+                teacher = pq.pop()
+                teacher._credits += credits_calc(teacher.rank)
+                done_list.append(teacher)
+                teacher_list[teacher.idd-2].alloted[session.name] = 'Res'
+            for teacher in done_list:
+                pq.push(teacher)
+        # Done reserve Quota
 
         for session in session_list:
             done_list = []
@@ -57,13 +69,15 @@ class Scheduler:
             for teacher in done_list:
                 pq.push(teacher)
 
-        matrix = [["Name of Faculty Member","Designation","Dept"]]
+
+        # finished processing ... finally create output
+        matrix = [["Name of Faculty Member","Info"]]
         for session in session_list:
             matrix[0].append(session.name)
         matrix[0].append("Total")
 
         for teacher in teacher_list:
-            teacher_row = [teacher.name,teacher.desg,teacher.dept]
+            teacher_row = [teacher.name,teacher.info]
             for session in session_list:
                 if session.name in teacher.alloted:
                     teacher_row.append(teacher.alloted[session.name])
