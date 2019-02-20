@@ -40,7 +40,7 @@ def main():
         sys.exit(1)
 
     try:
-        Scheduler(int(args.seed)).schedule(default_output_xlsx_path,int(args.reserved))
+        Scheduler(int(args.seed),int(args.reserved)).schedule(default_output_xlsx_path)
         Colour.print('Output written to : ' + Colour.END + default_output_xlsx_path, Colour.BLUE)
     except KeyboardInterrupt:
         Colour.print('Exiting on KeyboardInterrupt ...',Colour.YELLOW)

@@ -16,8 +16,9 @@ from .util import credits_calc
 from .util import randomize, fabricate
 
 class Scheduler:
-    def __init__(self,seed=5,room_list=None,teachers_list=None,schedule_list=None):
+    def __init__(self,seed=5,reserved=0,room_list=None,teachers_list=None,schedule_list=None):
         self.seed = int(seed)
+        self.reserved = int(reserved)
         self.room_list = Scheduler._verified_file(room_list)
         self.teachers_list = Scheduler._verified_file(teachers_list)
         self.schedule_list = Scheduler._verified_file(schedule_list)
@@ -40,14 +41,15 @@ class Scheduler:
             configure_path(var_name)
             Colour.print('Using ' + var_name + ' : ' + Colour.END + getattr(self,var_name), Colour.GREEN)
         Colour.print('Using seed value : ' + Colour.END + str(self.seed), Colour.GREEN)
+        Colour.print('Using reserved value : ' + Colour.END + str(self.reserved), Colour.GREEN)
 
 
-    def schedule(self,output_path=default_output_xlsx_path,reserved=0):
+    def schedule(self,output_path=default_output_xlsx_path):
         teachers_list = Teacher.get_teachers(self.teachers_list)
         session_list = Session.get_sessions(self.schedule_list,self.room_list)
 
         # for scheduling reserved using -r option
-        self.schedule_reserved(teachers_list,session_list,reserved)
+        self.schedule_reserved(teachers_list,session_list)
 
         # fake run
         self.generate_duties(teachers_list,session_list)
@@ -142,7 +144,7 @@ class Scheduler:
                 teachers_pq.push(teacher)
 
 
-    def schedule_reserved(self,teachers_list,session_list,reserved):
+    def schedule_reserved(self,teachers_list,session_list):
         '''
         this res is triggered using -r, it will be alloted according to rank
         smaller ranks will get more chances to be reserved
@@ -156,7 +158,7 @@ class Scheduler:
         max_rank = Scheduler._get_max_rank(teachers_list)
         for session in session_list: # reserve
             done_list = []
-            for j in range(reserved):
+            for j in range(self.reserved):
                 teacher = teachers_reserved_pq.pop()
                 teacher._credits += credits_calc(max_rank-teacher.rank + 1)
                 done_list.append(teacher)

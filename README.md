@@ -115,6 +115,7 @@ Using room_list : /home/srb/programs/exam_scheduler/input/room_list.csv
 Using teachers_list : /home/srb/programs/exam_scheduler/input/teachers_list.csv
 Using schedule_list : /home/srb/programs/exam_scheduler/input/schedule_list.csv
 Using seed value : 5
+Using reserved value : 0
 Output written to : /home/srb/programs/exam_scheduler/result.xlsx
 ```
 
