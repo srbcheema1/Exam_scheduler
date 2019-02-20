@@ -28,15 +28,19 @@ def main():
         Verifier.verify_teachers_list(args.vt)
         sys.exit()
 
+    if args.seed <= 0:
+        Colour.print('seed value should be a positive integer, got : ' + str(args.seed),Colour.RED)
+        sys.exit(1)
+
     global default_output_xlsx_path
     if args.output: default_output_xlsx_path = args.output
 
     if args.reserved < 0:
-        Colour.print('Reserved number should not be negative', Colour.RED)
+        Colour.print('Reserved number should be a non-negative integer, got : ' + str(args.reserved), Colour.RED)
         sys.exit(1)
 
     try:
-        Scheduler().schedule(default_output_xlsx_path,int(args.reserved))
+        Scheduler(int(args.seed)).schedule(default_output_xlsx_path,int(args.reserved))
         Colour.print('Output written to : ' + Colour.END + default_output_xlsx_path, Colour.BLUE)
     except KeyboardInterrupt:
         Colour.print('Exiting on KeyboardInterrupt ...',Colour.YELLOW)

@@ -13,10 +13,11 @@ from .priority_queue import PriorityQueue
 from .session import Session
 from .teacher import Teacher
 from .util import credits_calc
-from .util import randomize
+from .util import randomize, fabricate
 
 class Scheduler:
-    def __init__(self,room_list=None,teachers_list=None,schedule_list=None):
+    def __init__(self,seed=5,room_list=None,teachers_list=None,schedule_list=None):
+        self.seed = int(seed)
         self.room_list = Scheduler._verified_file(room_list)
         self.teachers_list = Scheduler._verified_file(teachers_list)
         self.schedule_list = Scheduler._verified_file(schedule_list)
@@ -38,6 +39,7 @@ class Scheduler:
         for var_name in var_list:
             configure_path(var_name)
             Colour.print('Using ' + var_name + ' : ' + Colour.END + getattr(self,var_name), Colour.GREEN)
+        Colour.print('Using seed value : ' + Colour.END + str(self.seed), Colour.GREEN)
 
 
     def schedule(self,output_path=default_output_xlsx_path,reserved=0):
@@ -71,7 +73,7 @@ class Scheduler:
         '''
         sorted_teachers_list = teachers_list[:]
         sorted_teachers_list.sort(key=lambda x: int(x.rank))
-        session_pq = PriorityQueue(randomize(session_list),key=lambda x: -int(x.unfilled))
+        session_pq = PriorityQueue(fabricate(session_list,self.seed),key=lambda x: -int(x.unfilled))
         for teacher in sorted_teachers_list:
             done_list = []
             for _ in range(teacher.duties):
@@ -124,7 +126,7 @@ class Scheduler:
         '''
         Fake run: just to determine teacher duties number
         '''
-        teachers_pq = PriorityQueue(randomize(teachers_list),key=lambda x: float(x._credits))
+        teachers_pq = PriorityQueue(randomize(teachers_list,self.seed),key=lambda x: float(x._credits))
         for session in session_list:
             done_list = []
             for room in session.room_list:
@@ -150,7 +152,7 @@ class Scheduler:
         teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
         for i in range(len(teachers_list_res)):
             teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
-        teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res),key=lambda x: float(x._credits))
+        teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res,self.seed+1),key=lambda x: float(x._credits))
         max_rank = Scheduler._get_max_rank(teachers_list)
         for session in session_list: # reserve
             done_list = []

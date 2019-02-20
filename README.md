@@ -93,16 +93,17 @@ This means if rank 1 will work for 100 units then rank 3 will work 200 units, si
 ### Usage
 ```
 srb@srb-pc:$ exam_scheduler --help
-usage: exam_scheduler.py [-h] [-v] [-r RESERVED] [-o OUTPUT]
+usage: exam_scheduler.py [-h] [-v] [-o OUTPUT] [-s SEED] [-r RESERVED]
                          [-vr VR | -vs VS | -vt VT]
 
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         Display version number
-  -r RESERVED, --reserved RESERVED
-                        reserved number of seats for each session
   -o OUTPUT, --output OUTPUT
                         Output file name, default output.xlsx
+  -s SEED, --seed SEED  seed value for randomness
+  -r RESERVED, --reserved RESERVED
+                        reserved number of seats for each session
   -vr VR                verify room_list file
   -vs VS                verify schedule_list file
   -vt VT                verify teachers_list file
@@ -111,8 +112,9 @@ optional arguments:
 ```
 srb@srb-pc:$ exam_scheduler -o result.xlsx
 Using room_list : /home/srb/programs/exam_scheduler/input/room_list.csv
-Using teacher_list : /home/srb/programs/exam_scheduler/input/teacher_list.csv
+Using teachers_list : /home/srb/programs/exam_scheduler/input/teachers_list.csv
 Using schedule_list : /home/srb/programs/exam_scheduler/input/schedule_list.csv
+Using seed value : 5
 Output written to : /home/srb/programs/exam_scheduler/result.xlsx
 ```
 

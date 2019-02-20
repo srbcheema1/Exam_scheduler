@@ -20,14 +20,18 @@ def get_parser():
     parser.add_argument("-v","--version",
                         action='store_true',
                         help='Display version number')
-    parser.add_argument("-r","--reserved",
-                        default=0,
-                        type=int,
-                        help='reserved number of seats for each session')
     parser.add_argument("-o","--output",
                         # type=lambda x: _is_valid_file(parser,x),
                         type=str,
                         help='Output file name, default output.xlsx')
+    parser.add_argument("-s","--seed",
+                        default=5,
+                        type=int,
+                        help='seed value for randomness')
+    parser.add_argument("-r","--reserved",
+                        default=0,
+                        type=int,
+                        help='reserved number of seats for each session')
 
     verify_parser = parser.add_mutually_exclusive_group()
     verify_parser.add_argument("-vr",
