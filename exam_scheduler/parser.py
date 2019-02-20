@@ -21,7 +21,7 @@ def get_parser():
                         action='store_true',
                         help='Display version number')
     parser.add_argument("-r","--reserved",
-                        default=-1,
+                        default=0,
                         type=int,
                         help='reserved number of seats for each session')
     parser.add_argument("-o","--output",

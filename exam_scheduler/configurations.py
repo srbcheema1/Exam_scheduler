@@ -33,7 +33,6 @@ _config_template = \
     'room_list':_default_room_list,
     'teachers_list':_default_teachers_list,
     'schedule_list':_default_schedule_list,
-    'reserved':0,
 }
 
 config_json = SrbJson(config_file_path,_config_template)

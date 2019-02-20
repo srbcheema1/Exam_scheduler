@@ -40,39 +40,13 @@ class Scheduler:
             Colour.print('Using ' + var_name + ' : ' + Colour.END + getattr(self,var_name), Colour.GREEN)
 
 
-    @staticmethod
-    def _get_max_rank(teachers_list):
-        max_rank = 0
-        for teacher in teachers_list:
-            max_rank = max(max_rank,teacher.rank)
-        return max_rank
-
     def schedule(self,output_path=default_output_xlsx_path,reserved=0):
         teachers_list = Teacher.get_teachers(self.teachers_list)
         max_rank = Scheduler._get_max_rank(teachers_list)
         session_list = Session.get_sessions(self.schedule_list,self.room_list)
 
-        '''
-        this res is triggered using -r, it will be alloted according to rank
-        smaller ranks will get more chances to be reserved
-        there is another way, that is using creating a RES room in roomlist
-        both differ by name Res for this one RES for that one
-        '''
-        teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
-        for i in range(len(teachers_list_res)):
-            teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
-        teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res),key=lambda x: float(x._credits))
-        for session in session_list: # reserve
-            done_list = []
-            for j in range(reserved):
-                teacher = teachers_reserved_pq.pop()
-                teacher._credits += credits_calc(max_rank-teacher.rank + 1)
-                done_list.append(teacher)
-                teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
-                teachers_list[teacher.idd-2].alloted_res.add(session.name)
-                teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
-            for teacher in done_list:
-                teachers_reserved_pq.push(teacher)
+        # for scheduling reserved using -r option
+        self.schedule_reserved(teachers_list,session_list,reserved)
 
         '''
         Fake run: just to determine teacher duties number
@@ -108,11 +82,9 @@ class Scheduler:
                     print('Session broke')
                     print(session)
                     sys.exit(1)
-
                 room.teachers_alloted.append(teacher)
                 teacher.alloted[session.name] = room.name
                 session.unfilled -= 1
-
                 if room.teachers - len(room.teachers_alloted) > 0: session.room_pq.push(room)
             for session in done_list:
                 if session.unfilled > 0: session_pq.push(session)
@@ -139,15 +111,46 @@ class Scheduler:
                     int(teacher._credits)
                 ])
             for session in session_list:
-                if session.name in teacher.alloted:
-                    teachers_row.append(teacher.alloted[session.name])
-                else:
-                    teachers_row.append('-')
+                if session.name in teacher.alloted: teachers_row.append(teacher.alloted[session.name])
+                else: teachers_row.append('-')
             teachers_row.append(len(teacher.alloted))
             matrix.append(teachers_row)
 
         sheet = Tabular(matrix)
         sheet.write_xls(output_path)
+
+
+    @staticmethod
+    def _get_max_rank(teachers_list):
+        max_rank = 0
+        for teacher in teachers_list:
+            max_rank = max(max_rank,teacher.rank)
+        return max_rank
+
+
+    def schedule_reserved(self,teachers_list,session_list,reserved):
+        '''
+        this res is triggered using -r, it will be alloted according to rank
+        smaller ranks will get more chances to be reserved
+        there is another way, that is using creating a RES room in roomlist
+        both differ by name Res for this one RES for that one
+        '''
+        teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
+        for i in range(len(teachers_list_res)):
+            teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
+        teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res),key=lambda x: float(x._credits))
+        for session in session_list: # reserve
+            done_list = []
+            for j in range(reserved):
+                teacher = teachers_reserved_pq.pop()
+                teacher._credits += credits_calc(max_rank-teacher.rank + 1)
+                done_list.append(teacher)
+                teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
+                teachers_list[teacher.idd-2].alloted_res.add(session.name)
+                teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
+            for teacher in done_list:
+                teachers_reserved_pq.push(teacher)
+
 
 
     @staticmethod
