@@ -9,6 +9,9 @@ class Session:
     def __init__(self,name,room_list):
         self.name = name
         self.room_list = room_list
+        self.need = 0 # slots not filled
+        for room in room_list:
+            self.need += room.teachers
 
     def __str__(self):
         a = [[self.name]]
@@ -17,6 +20,9 @@ class Session:
         a = Tabular(a)
         return a.__str__()
 
+    def __lt__(self,obj):
+        return self.need > obj.need
+
     @staticmethod
     def get_sessions(matrix,room_data):
         '''
@@ -24,7 +30,9 @@ class Session:
         room_data should be a tabular object or a path
         '''
         if type(matrix) is str:
-            matrix = Tabular(matrix)
+            temp = Tabular()
+            temp.load_xls(matrix,strict=True)
+            matrix = temp
         if type(room_data) is str:
             room_data = Room.get_rooms(room_data)
 

@@ -28,6 +28,7 @@ class Teacher:
         self._credits = credits_calc(rank)
         self.alloted = {}
         self.alloted_res = set()
+        self.duties = 0
 
     def __str__(self):
         a = [
@@ -56,7 +57,9 @@ class Teacher:
         input should be a Tabular object, or a path
         '''
         if type(matrix) is str:
-            matrix = Tabular(matrix)
+            temp = Tabular()
+            temp.load_xls(matrix,strict=True)
+            matrix = temp
         ret = []
         header = matrix[0]
         cols = len(header)

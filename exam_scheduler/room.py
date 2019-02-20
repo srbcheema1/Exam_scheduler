@@ -40,7 +40,9 @@ class Room:
         input should be a Tabular object, or a path
         '''
         if type(matrix) is str:
-            matrix = Tabular(matrix)
+            temp = Tabular()
+            temp.load_xls(matrix,strict=True)
+            matrix = temp
         ret = []
         header = matrix[0]
         cols = len(header)
