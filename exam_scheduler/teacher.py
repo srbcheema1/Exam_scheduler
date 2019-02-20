@@ -36,6 +36,7 @@ class Teacher:
                 ["name",self.name],
                 ["rank",self.rank],
                 ["info",self.info],
+                ["duties",self.duties],
                 ["alloted_res","\n".join([str(x) for x in self.alloted_res])],
                 ["alloted","\n".join([str((x,self.alloted[x])) for x in self.alloted])],
             ]

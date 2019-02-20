@@ -4,24 +4,27 @@ from srblib import Colour
 from srblib import Tabular
 
 from .room import Room
+from .priority_queue import PriorityQueue
 
 class Session:
     def __init__(self,name,room_list):
         self.name = name
         self.room_list = room_list
-        self.need = 0 # slots not filled
+        self.unfilled = 0 # slots not filled
         for room in room_list:
-            self.need += room.teachers
+            self.unfilled += room.teachers
+        self.room_pq = PriorityQueue(self.room_list,key=lambda x: -int(x.teachers - len(x.teachers_alloted)))
 
     def __str__(self):
         a = [[self.name]]
+        a[0].append(self.unfilled)
         for room in self.room_list:
-            a[0].append(room.name)
+            a[0].append(room.name + ' ' + str(room.teachers - len(room.teachers_alloted)))
         a = Tabular(a)
         return a.__str__()
 
     def __lt__(self,obj):
-        return self.need > obj.need
+        return self.unfilled > obj.unfilled
 
     @staticmethod
     def get_sessions(matrix,room_data):
@@ -52,7 +55,7 @@ class Session:
                 need = row[room]
                 if need == 'y' or need == 'Y':
                     if room in room_json:
-                        room_list.append(room_json[room])
+                        room_list.append(room_json[room].copy())
                     else:
                         # raise Exception('Room ' +room+ ' not present in rooms file')
                         Colour.print('Room ' + room + ' not present in room list',Colour.RED)

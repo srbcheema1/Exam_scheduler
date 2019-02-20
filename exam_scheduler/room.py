@@ -1,5 +1,7 @@
 from srblib import Tabular
 
+import copy
+
 from .util import credits_calc
 
 class Room:
@@ -20,6 +22,13 @@ class Room:
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
         self.teachers_alloted = []
+
+    def __lt__(self,obj):
+        return self.teachers - len(self.teachers_alloted) > obj.teachers - len(obj.teachers_alloted)
+
+    def copy(self):
+        ret = copy.deepcopy(self)
+        return ret
 
     def __str__(self):
         a = [

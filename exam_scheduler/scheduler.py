@@ -50,9 +50,14 @@ class Scheduler:
     def schedule(self,output_path=default_output_xlsx_path,reserved=0):
         teachers_list = Teacher.get_teachers(self.teachers_list)
         max_rank = Scheduler._get_max_rank(teachers_list)
-
         session_list = Session.get_sessions(self.schedule_list,self.room_list)
 
+        '''
+        this res is triggered using -r, it will be alloted according to rank
+        smaller ranks will get more chances to be reserved
+        there is another way, that is using creating a RES room in roomlist
+        both differ by name Res for this one RES for that one
+        '''
         teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
         for i in range(len(teachers_list_res)):
             teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
@@ -66,28 +71,51 @@ class Scheduler:
                 teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
                 teachers_list[teacher.idd-2].alloted_res.add(session.name)
                 teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
-                # print(teacher)
             for teacher in done_list:
                 teachers_reserved_pq.push(teacher)
-        # Done reserve Quota
 
-        # session_pq = PriorityQueue(session_list,key=lambda x: float(x))
+        '''
+        Fake run: just to determine teacher duties number
+        '''
         teachers_pq = PriorityQueue(randomize(teachers_list),key=lambda x: float(x._credits))
         for session in session_list:
             done_list = []
-            for i in range(len(session.room_list)):
-                for j in range(session.room_list[i].teachers):
+            for room in session.room_list:
+                for _ in range(room.teachers):
                     teacher = teachers_pq.pop()
                     while session.name in teacher.alloted_res: # teacher should not get sametime res and room
                         done_list.append(teacher)
                         teacher = teachers_pq.pop()
-                    session.room_list[i].teachers_alloted.append(teacher)
                     teacher._credits += credits_calc(teacher.rank)
-                    teacher.alloted[session.name] = session.room_list[i].name
+                    teacher.duties += 1
                     done_list.append(teacher)
-                    # print(teacher)
             for teacher in done_list:
                 teachers_pq.push(teacher)
+
+        '''
+        Srb's round-n-robin algorithm
+        '''
+        sorted_teachers_list = teachers_list[:]
+        sorted_teachers_list.sort(key=lambda x: int(x.rank))
+        session_pq = PriorityQueue(randomize(session_list),key=lambda x: -int(x.unfilled))
+        for teacher in sorted_teachers_list:
+            done_list = []
+            for i in range(teacher.duties):
+                session = session_pq.pop()
+                done_list.append(session)
+                try: room = session.room_pq.pop()
+                except:
+                    print('Session broke')
+                    print(session)
+                    sys.exit(1)
+
+                room.teachers_alloted.append(teacher)
+                teacher.alloted[session.name] = room.name
+                session.unfilled -= 1
+
+                if room.teachers - len(room.teachers_alloted) > 0: session.room_pq.push(room)
+            for session in done_list:
+                if session.unfilled > 0: session_pq.push(session)
 
 
         # finished processing ... finally create output
@@ -98,9 +126,18 @@ class Scheduler:
         matrix[0].append("Total")
 
         for teacher in teachers_list:
+            if teacher.duties != len(teacher.alloted):
+                print('broke on')
+                print(teacher)
+                sys.exit(1)
             teachers_row = [teacher.name,teacher.info]
             if debug:
-                teachers_row.extend([teacher.rank,len(teacher.alloted),len(teacher.alloted_res),int(teacher._credits)])
+                teachers_row.extend([
+                    teacher.rank,
+                    len(teacher.alloted),
+                    len(teacher.alloted_res),
+                    int(teacher._credits)
+                ])
             for session in session_list:
                 if session.name in teacher.alloted:
                     teachers_row.append(teacher.alloted[session.name])
