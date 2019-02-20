@@ -20,6 +20,10 @@ def get_parser():
     parser.add_argument("-v","--version",
                         action='store_true',
                         help='Display version number')
+    parser.add_argument("-r","--reserved",
+                        default=-1,
+                        type=int,
+                        help='reserved number of seats for each session')
     parser.add_argument("-o","--output",
                         # type=lambda x: _is_valid_file(parser,x),
                         type=str,

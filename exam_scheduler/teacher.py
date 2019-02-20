@@ -27,6 +27,7 @@ class Teacher:
         self.__dict__.update(kwargs)
         self._credits = credits_calc(rank)
         self.alloted = {}
+        self.alloted_res = {}
 
     def __str__(self):
         a = [
@@ -34,6 +35,7 @@ class Teacher:
                 ["name",self.name],
                 ["rank",self.rank],
                 ["info",self.info],
+                ["alloted_res","\n".join([str((x,self.alloted_res[x])) for x in self.alloted_res])],
                 ["alloted","\n".join([str((x,self.alloted[x])) for x in self.alloted])],
             ]
         if debug: a.append(["credits",self._credits])

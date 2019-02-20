@@ -17,6 +17,7 @@ def credits_calc(rank,workratio=work_ratio):
     return (100*workratio["1"])/workratio[str(rank)]
 
 def randomize(arr):
+    arr = [i for i in arr]
     n = len(arr)
     for i in range(0,n-1):
         j = randint(i,n-1)
