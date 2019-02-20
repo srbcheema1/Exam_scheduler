@@ -53,7 +53,7 @@ class Scheduler:
 
         session_list = Session.get_sessions(self.schedule_list,self.room_list)
 
-        teachers_list_res = [i for i in teachers_list]
+        teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
         for i in range(len(teachers_list_res)):
             teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
         teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res),key=lambda x: float(x._credits))
@@ -64,8 +64,9 @@ class Scheduler:
                 teacher._credits += credits_calc(max_rank-teacher.rank + 1)
                 done_list.append(teacher)
                 teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
-                teachers_list[teacher.idd-2].alloted_res[session.name] = 'Res'
+                teachers_list[teacher.idd-2].alloted_res.add(session.name)
                 teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
+                # print(teacher)
             for teacher in done_list:
                 teachers_reserved_pq.push(teacher)
         # Done reserve Quota
@@ -77,11 +78,14 @@ class Scheduler:
             for i in range(len(session.room_list)):
                 for j in range(session.room_list[i].teachers):
                     teacher = teachers_pq.pop()
+                    while session.name in teacher.alloted_res: # teacher should not get sametime res and room
+                        done_list.append(teacher)
+                        teacher = teachers_pq.pop()
                     session.room_list[i].teachers_alloted.append(teacher)
                     teacher._credits += credits_calc(teacher.rank)
+                    teacher.alloted[session.name] = session.room_list[i].name
                     done_list.append(teacher)
-                    teachers_list[teacher.idd-2].alloted[session.name] = session.room_list[i].name
-                    teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
+                    # print(teacher)
             for teacher in done_list:
                 teachers_pq.push(teacher)
 
