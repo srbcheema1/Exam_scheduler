@@ -18,6 +18,19 @@
 python3 -m pip install --user exam_scheduler
 ```
 
+
+##### linux and mac users
+```
+python3 -m pip install --user exam_scheduler
+```
+Don't forget `~/.local/bin` should be in your `PATH`. Add line `export PATH=$PATH:"~/.local/bin"` in your `.bashrc`
+
+##### windows users
+for windows users you should have python3 installed in your system
+```
+python3 -m pip install --user exam_scheduler
+```
+
 #### Build from Source
 
 - Clone the repository and checkout to stable commit
@@ -51,19 +64,18 @@ python3 setup.py sdist
 
 - schedule_list - A 2D matrix includeing relation between a session and a room, value is 'Y' if room is required on particular session.
 
-#### Input can be provided in a xlsx or csv file
 
 ### Config files
 
 - config.json - includes paths for input files in json format. default path ~/.config/exam_scheduler/config.json
 ```
 {
-    "room_list": "/home/srb/programs/exam_schedular/input/room_list.csv",
-    "teacher_list": "/home/srb/programs/exam_schedular/input/teacher_list.csv",
-    "schedule_list": "/home/srb/programs/exam_schedular/input/schedule_list.csv"
+    "room_list": "/home/srb/programs/exam_scheduler/input/room_list.xlsx",
+    "teacher_list": "/home/srb/programs/exam_scheduler/input/teacher_list.xlsx",
+    "schedule_list": "/home/srb/programs/exam_scheduler/input/schedule_list.xlsx"
 }
 ```
-By default it will automtically pick files from working-directory OR input-folder containing `room_list`,`teacher_list`,`schedule_list` in their names.
+By default it will automtically pick excel files from working-directory OR input-folder containing `room_list`,`teacher_list`,`schedule_list` in their names.
 
 - work_ratio.json - includes working ratio for different ranks with respect to rank `1`.
 ```
@@ -81,20 +93,22 @@ This means if rank 1 will work for 100 units then rank 3 will work 200 units, si
 ### Usage
 ```
 srb@srb-pc:$ exam_scheduler --help
-usage: exam_scheduler.py [-h] [-v] [-o OUTPUT]
+usage: exam_scheduler.py [-h] [-v] [-r RESERVED] [-o OUTPUT]
 
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         Display version number
+  -r RESERVED, --reserved RESERVED
+                        reserved number of seats for each session
   -o OUTPUT, --output OUTPUT
                         Output file name, default output.xlsx
 ```
 ```
 srb@srb-pc:$ exam_scheduler -o result.xlsx
-Using room_list : /home/srb/programs/exam_schedular/input/room_list.csv
-Using teacher_list : /home/srb/programs/exam_schedular/input/teacher_list.csv
-Using schedule_list : /home/srb/programs/exam_schedular/input/schedule_list.csv
-Output written to : /home/srb/programs/exam_schedular/result.xlsx
+Using room_list : /home/srb/programs/exam_scheduler/input/room_list.csv
+Using teacher_list : /home/srb/programs/exam_scheduler/input/teacher_list.csv
+Using schedule_list : /home/srb/programs/exam_scheduler/input/schedule_list.csv
+Output written to : /home/srb/programs/exam_scheduler/result.xlsx
 ```
 
 

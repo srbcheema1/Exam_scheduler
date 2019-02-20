@@ -42,30 +42,30 @@ class Scheduler:
 
     def schedule(self,output_path=default_output_xlsx_path,reserved=0):
         teachers_list = Teacher.get_teachers(self.teachers_list)
-        max_rank = Scheduler._get_max_rank(teachers_list)
         session_list = Session.get_sessions(self.schedule_list,self.room_list)
 
         # for scheduling reserved using -r option
         self.schedule_reserved(teachers_list,session_list,reserved)
 
-        '''
-        Fake run: just to determine teacher duties number
-        '''
-        teachers_pq = PriorityQueue(randomize(teachers_list),key=lambda x: float(x._credits))
-        for session in session_list:
-            done_list = []
-            for room in session.room_list:
-                for _ in range(room.teachers):
-                    teacher = teachers_pq.pop()
-                    while session.name in teacher.alloted_res: # teacher should not get sametime res and room
-                        done_list.append(teacher)
-                        teacher = teachers_pq.pop()
-                    teacher._credits += credits_calc(teacher.rank)
-                    teacher.duties += 1
-                    done_list.append(teacher)
-            for teacher in done_list:
-                teachers_pq.push(teacher)
+        # fake run
+        self.generate_duties(teachers_list,session_list)
 
+        # round_n_robin algorithm
+        self.round_n_robin(teachers_list,session_list)
+
+        # finished processing ... finally create output
+        self.dump_output(teachers_list,session_list,output_path)
+
+
+    @staticmethod
+    def _get_max_rank(teachers_list):
+        max_rank = 0
+        for teacher in teachers_list:
+            max_rank = max(max_rank,teacher.rank)
+        return max_rank
+
+
+    def round_n_robin(self,teachers_list,session_list):
         '''
         Srb's round-n-robin algorithm
         '''
@@ -74,7 +74,7 @@ class Scheduler:
         session_pq = PriorityQueue(randomize(session_list),key=lambda x: -int(x.unfilled))
         for teacher in sorted_teachers_list:
             done_list = []
-            for i in range(teacher.duties):
+            for _ in range(teacher.duties):
                 session = session_pq.pop()
                 done_list.append(session)
                 try: room = session.room_pq.pop()
@@ -90,7 +90,7 @@ class Scheduler:
                 if session.unfilled > 0: session_pq.push(session)
 
 
-        # finished processing ... finally create output
+    def dump_output(self,teachers_list,session_list,output_path):
         matrix = [["Name of Faculty Member","Info"]]
         if debug: matrix[0].extend(['rank','total','res','credits']) # srbdebug
         for session in session_list:
@@ -120,12 +120,24 @@ class Scheduler:
         sheet.write_xls(output_path)
 
 
-    @staticmethod
-    def _get_max_rank(teachers_list):
-        max_rank = 0
-        for teacher in teachers_list:
-            max_rank = max(max_rank,teacher.rank)
-        return max_rank
+    def generate_duties(self,teachers_list,session_list):
+        '''
+        Fake run: just to determine teacher duties number
+        '''
+        teachers_pq = PriorityQueue(randomize(teachers_list),key=lambda x: float(x._credits))
+        for session in session_list:
+            done_list = []
+            for room in session.room_list:
+                for _ in range(room.teachers):
+                    teacher = teachers_pq.pop()
+                    while session.name in teacher.alloted_res: # teacher should not get sametime res and room
+                        done_list.append(teacher)
+                        teacher = teachers_pq.pop()
+                    teacher._credits += credits_calc(teacher.rank)
+                    teacher.duties += 1
+                    done_list.append(teacher)
+            for teacher in done_list:
+                teachers_pq.push(teacher)
 
 
     def schedule_reserved(self,teachers_list,session_list,reserved):
@@ -139,6 +151,7 @@ class Scheduler:
         for i in range(len(teachers_list_res)):
             teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
         teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res),key=lambda x: float(x._credits))
+        max_rank = Scheduler._get_max_rank(teachers_list)
         for session in session_list: # reserve
             done_list = []
             for j in range(reserved):
@@ -150,7 +163,6 @@ class Scheduler:
                 teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
             for teacher in done_list:
                 teachers_reserved_pq.push(teacher)
-
 
 
     @staticmethod
