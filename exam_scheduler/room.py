@@ -3,6 +3,7 @@ from srblib import Tabular
 import copy
 
 from .util import credits_calc
+from .verifier import Verifier
 
 class Room:
     def __init__(self,name,teachers,capacity=0,**kwargs):
@@ -49,6 +50,7 @@ class Room:
         input should be a Tabular object, or a path
         '''
         if type(matrix) is str:
+            Verifier.verify_room_list(matrix)
             temp = Tabular()
             temp.load_xls(matrix,strict=True)
             matrix = temp

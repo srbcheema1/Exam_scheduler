@@ -2,6 +2,7 @@ from srblib import Tabular
 from srblib import debug
 
 from .util import credits_calc
+from .verifier import Verifier
 
 class Teacher:
     def __init__(self,idd,name,rank,info="",**kwargs):
@@ -58,6 +59,7 @@ class Teacher:
         input should be a Tabular object, or a path
         '''
         if type(matrix) is str:
+            Verifier.verify_teachers_list(matrix)
             temp = Tabular()
             temp.load_xls(matrix,strict=True)
             matrix = temp

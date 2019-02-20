@@ -5,6 +5,7 @@ from srblib import Tabular
 
 from .room import Room
 from .priority_queue import PriorityQueue
+from .verifier import Verifier
 
 class Session:
     def __init__(self,name,room_list):
@@ -33,6 +34,7 @@ class Session:
         room_data should be a tabular object or a path
         '''
         if type(matrix) is str:
+            Verifier.verify_schedule_list(matrix)
             temp = Tabular()
             temp.load_xls(matrix,strict=True)
             matrix = temp
