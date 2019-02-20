@@ -60,7 +60,7 @@ python3 setup.py sdist
 
 - room_list - includes `room-name` and `teachers-required` as compulsory attributes. Other attributes may follow.
 
-- teacher_list - includes `teacher-name` and `rank` as compulsory attributes. Other attributes may follow.
+- teachers_list - includes `teacher-name` and `rank` as compulsory attributes. Other attributes may follow.
 
 - schedule_list - A 2D matrix includeing relation between a session and a room, value is 'Y' if room is required on particular session.
 
@@ -71,11 +71,11 @@ python3 setup.py sdist
 ```
 {
     "room_list": "/home/srb/programs/exam_scheduler/input/room_list.xlsx",
-    "teacher_list": "/home/srb/programs/exam_scheduler/input/teacher_list.xlsx",
+    "teachers_list": "/home/srb/programs/exam_scheduler/input/teachers_list.xlsx",
     "schedule_list": "/home/srb/programs/exam_scheduler/input/schedule_list.xlsx"
 }
 ```
-By default it will automtically pick excel files from working-directory OR input-folder containing `room_list`,`teacher_list`,`schedule_list` in their names.
+By default it will automtically pick excel files from working-directory OR input-folder containing `room_list`,`teachers_list`,`schedule_list` in their names.
 
 - work_ratio.json - includes working ratio for different ranks with respect to rank `1`.
 ```
@@ -94,6 +94,7 @@ This means if rank 1 will work for 100 units then rank 3 will work 200 units, si
 ```
 srb@srb-pc:$ exam_scheduler --help
 usage: exam_scheduler.py [-h] [-v] [-r RESERVED] [-o OUTPUT]
+                         [-vr VR | -vs VS | -vt VT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -102,7 +103,11 @@ optional arguments:
                         reserved number of seats for each session
   -o OUTPUT, --output OUTPUT
                         Output file name, default output.xlsx
+  -vr VR                verify room_list file
+  -vs VS                verify schedule_list file
+  -vt VT                verify teachers_list file
 ```
+
 ```
 srb@srb-pc:$ exam_scheduler -o result.xlsx
 Using room_list : /home/srb/programs/exam_scheduler/input/room_list.csv
@@ -123,3 +128,5 @@ Output written to : /home/srb/programs/exam_scheduler/result.xlsx
 ### Developed by
 
 Developer / Author: [Srb Cheema](https://github.com/srbcheema1/)
+
+Collaborator : [Rakesh Kumar](https://github.com/spider34/)

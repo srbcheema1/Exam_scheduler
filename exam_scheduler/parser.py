@@ -28,5 +28,17 @@ def get_parser():
                         # type=lambda x: _is_valid_file(parser,x),
                         type=str,
                         help='Output file name, default output.xlsx')
+
+    verify_parser = parser.add_mutually_exclusive_group()
+    verify_parser.add_argument("-vr",
+                        type=lambda x: _is_valid_file(parser,x),
+                        help='verify room_list file')
+    verify_parser.add_argument("-vs",
+                        type=lambda x: _is_valid_file(parser,x),
+                        help='verify schedule_list file')
+    verify_parser.add_argument("-vt",
+                        type=lambda x: _is_valid_file(parser,x),
+                        help='verify teachers_list file')
+
     autocomplete(parser)
     return parser.parse_args()

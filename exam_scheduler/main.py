@@ -10,11 +10,22 @@ from . import __version__, __mod_name__
 from .scheduler import Scheduler
 from .parser import get_parser
 from .configurations import default_output_xlsx_path
+from .verifier import Verifier
 
 def main():
     args = get_parser()
     if args.version:
         print(__mod_name__+'=='+__version__)
+        sys.exit()
+
+    if args.vr:
+        Verifier.verify_room_list(args.vr)
+        sys.exit()
+    if args.vs:
+        Verifier.verify_schedule_list(args.vs)
+        sys.exit()
+    if args.vt:
+        Verifier.verify_teachers_list(args.vt)
         sys.exit()
 
     global default_output_xlsx_path
