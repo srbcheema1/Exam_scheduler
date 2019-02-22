@@ -11,21 +11,26 @@ class Session:
     def __init__(self,name,room_list):
         self.name = name
         self.room_list = room_list
-        self.unfilled = 0 # slots not filled
+        self.remaining = 0 # slots not filled
         for room in room_list:
-            self.unfilled += room.teachers
+            self.remaining += room.teachers
         self.room_pq = PriorityQueue(self.room_list,key=lambda x: -int(x.teachers - len(x.teachers_alloted)))
 
     def __str__(self):
         a = [[self.name]]
-        a[0].append(self.unfilled)
+        a[0].append(self.remaining)
+        a[0].append(self.room_pq.top().name)
+        a[0].append(self.room_pq.top().unfilled())
+        a[0].append(self.room_pq.top().filled())
         for room in self.room_list:
             a[0].append(room.name + ' ' + str(room.teachers - len(room.teachers_alloted)))
         a = Tabular(a)
         return a.__str__()
 
     def __lt__(self,obj):
-        return self.unfilled > obj.unfilled
+        if self.room_pq.top() == obj.room_pq.top():
+            return self.remaining > obj.remaining
+        return self.room_pq.top() < obj.room_pq.top()
 
     @staticmethod
     def get_sessions(matrix,room_data):

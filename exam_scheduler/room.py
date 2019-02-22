@@ -24,8 +24,21 @@ class Room:
         self.__dict__.update(kwargs)
         self.teachers_alloted = []
 
+    def unfilled(self):
+        return self.teachers - len(self.teachers_alloted)
+
+    def filled(self):
+        return len(self.teachers_alloted)
+
+    def __eq__(self,obj):
+        if self.unfilled() == obj.unfilled() and self.filled() == obj.filled():
+            return True
+        return False
+
     def __lt__(self,obj):
-        return self.teachers - len(self.teachers_alloted) > obj.teachers - len(obj.teachers_alloted)
+        if self.unfilled() == obj.unfilled():
+            return self.filled() < obj.filled()
+        return self.unfilled() > obj.unfilled()
 
     def copy(self):
         ret = copy.deepcopy(self)

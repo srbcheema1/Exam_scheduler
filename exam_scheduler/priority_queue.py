@@ -1,7 +1,7 @@
 import heapq
 
 class PriorityQueue:
-    def __init__(self, data=None, key=lambda x:x):
+    def __init__(self, data=None, key=lambda x:0):
         self.empty = True
         self.key = key
         if data:
@@ -23,9 +23,7 @@ class PriorityQueue:
 
     def top(self):
         if(len(self._data) == 0): raise Exception('queue empty !! unable to top')
-        ret = heapq.heappop(self._data)[1]
-        heapq.heappush(self._data, (self.key(ret), ret))
-        return ret
+        return self._data[0][1]
 
     def __len__(self):
         return len(self._data)

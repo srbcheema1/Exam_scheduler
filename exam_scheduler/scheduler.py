@@ -17,6 +17,7 @@ from .util import randomize, fabricate
 
 class Scheduler:
     def __init__(self,seed=5,reserved=0,room_list=None,teachers_list=None,schedule_list=None):
+        self.debug = False
         self.seed = int(seed)
         self.reserved = int(reserved)
         self.room_list = Scheduler._verified_file(room_list)
@@ -75,23 +76,30 @@ class Scheduler:
         '''
         sorted_teachers_list = teachers_list[:]
         sorted_teachers_list.sort(key=lambda x: int(x.rank))
-        session_pq = PriorityQueue(fabricate(session_list,self.seed),key=lambda x: -int(x.unfilled))
+        session_pq = PriorityQueue(fabricate(session_list,self.seed))
+
+        debug_how = 0
         for teacher in sorted_teachers_list:
             done_list = []
             for _ in range(teacher.duties):
                 session = session_pq.pop()
+                if(self.debug): print(session)
                 done_list.append(session)
                 try: room = session.room_pq.pop()
                 except:
-                    print('Session broke')
+                    print('ERROR: Session broke')
                     print(session)
                     sys.exit(1)
                 room.teachers_alloted.append(teacher)
                 teacher.alloted[session.name] = room.name
-                session.unfilled -= 1
-                if room.teachers - len(room.teachers_alloted) > 0: session.room_pq.push(room)
+                session.remaining -= 1
+                debug_how += 1
+                if room.unfilled() > 0: session.room_pq.push(room)
             for session in done_list:
-                if session.unfilled > 0: session_pq.push(session)
+                if session.remaining > 0: session_pq.push(session)
+            if(self.debug):print(teacher)
+            if(self.debug):print('debug_how',debug_how)
+
 
 
     def dump_output(self,teachers_list,session_list,output_path):
