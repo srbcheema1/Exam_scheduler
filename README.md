@@ -104,6 +104,7 @@ optional arguments:
   -s SEED, --seed SEED  seed value for randomness
   -r RESERVED, --reserved RESERVED
                         reserved number of seats for each session
+  -d, --debug           print debug info
   -vr VR                verify room_list file
   -vs VS                verify schedule_list file
   -vt VT                verify teachers_list file

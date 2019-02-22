@@ -32,6 +32,9 @@ def get_parser():
                         default=0,
                         type=int,
                         help='reserved number of seats for each session')
+    parser.add_argument("-d","--debug",
+                        action='store_true',
+                        help='print debug info')
 
     verify_parser = parser.add_mutually_exclusive_group()
     verify_parser.add_argument("-vr",

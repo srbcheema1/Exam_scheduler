@@ -111,7 +111,7 @@ class Scheduler:
 
         for teacher in teachers_list:
             if teacher.duties != len(teacher.alloted):
-                print('broke on')
+                print('ERROR: teacher unable to get enough slots as anticipated')
                 print(teacher)
                 sys.exit(1)
             teachers_row = [teacher.name,teacher.info]
