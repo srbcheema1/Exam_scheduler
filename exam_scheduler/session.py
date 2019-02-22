@@ -14,7 +14,7 @@ class Session:
         self.remaining = 0 # slots not filled
         for room in room_list:
             self.remaining += room.teachers
-        self.room_pq = PriorityQueue(self.room_list,key=lambda x: -int(x.teachers - len(x.teachers_alloted)))
+        self.room_pq = PriorityQueue(self.room_list)
 
     def __str__(self):
         a = [[self.name]]
