@@ -7,6 +7,8 @@ work_ratio_template = {
     3:200,
     4:250,
     5:300,
+    6:350,
+    7:400,
 }
 work_ratio = SrbJson('~/.config/exam_scheduler/work_ratio.json',work_ratio_template)
 

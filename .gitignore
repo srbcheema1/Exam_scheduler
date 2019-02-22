@@ -17,4 +17,4 @@ venv3/
 # input output files
 input/
 output.xlsx
-output.xlx
+output.xls

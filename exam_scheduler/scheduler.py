@@ -62,14 +62,6 @@ class Scheduler:
         self.dump_output(teachers_list,session_list,output_path)
 
 
-    @staticmethod
-    def _get_max_rank(teachers_list):
-        max_rank = 0
-        for teacher in teachers_list:
-            max_rank = max(max_rank,teacher.rank)
-        return max_rank
-
-
     def round_n_robin(self,teachers_list,session_list):
         '''
         Srb's round-n-robin algorithm
@@ -83,13 +75,15 @@ class Scheduler:
             done_list = []
             for _ in range(teacher.duties):
                 session = session_pq.pop()
+                while(session.name in teacher.alloted_res):
+                    if(self.debug): print('skipped session\n',session)
+                    done_list.append(session)
+                    session = session_pq.pop()
+
                 if(self.debug): print(session)
                 done_list.append(session)
-                try: room = session.room_pq.pop()
-                except:
-                    print('ERROR: Session broke')
-                    print(session)
-                    sys.exit(1)
+
+                room = session.room_pq.pop()
                 room.teachers_alloted.append(teacher)
                 teacher.alloted[session.name] = room.name
                 session.remaining -= 1
@@ -110,7 +104,7 @@ class Scheduler:
         matrix[0].append("Total")
 
         for teacher in teachers_list:
-            if teacher.duties != len(teacher.alloted):
+            if teacher.duties != len(teacher.alloted) - len(teacher.alloted_res):
                 print('ERROR: teacher unable to get enough slots as anticipated')
                 print(teacher)
                 sys.exit(1)
@@ -156,8 +150,14 @@ class Scheduler:
         '''
         this res is triggered using -r, it will be alloted according to rank
         smaller ranks will get more chances to be reserved
-        there is another way, that is using creating a RES room in roomlist
+        there is another way, that is using creating a RES room in roomlist (not recommended)
         both differ by name Res for this one RES for that one
+
+            reason for not being recommended theh roomlist way of reserving:
+                1. equal credits for normal and reserved room
+                2. unequal distribution of reserved seats
+                3. no priority to better rank teachers.
+                4. makes priority queue difficult to schedule if reserved room contain more teachers than other rooms
         '''
         teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
         for i in range(len(teachers_list_res)):
@@ -172,7 +172,7 @@ class Scheduler:
                 done_list.append(teacher)
                 teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
                 teachers_list[teacher.idd-2].alloted_res.add(session.name)
-                teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank)
+                teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank) / 2 # should get half credits for reserved seat
             for teacher in done_list:
                 teachers_reserved_pq.push(teacher)
 
@@ -186,4 +186,12 @@ class Scheduler:
             Colour.print('No such file : ' + Colour.END + file_path,Colour.RED)
             sys.exit()
         return file_path
+
+    @staticmethod
+    def _get_max_rank(teachers_list):
+        max_rank = 0
+        for teacher in teachers_list:
+            max_rank = max(max_rank,teacher.rank)
+        return max_rank
+
 

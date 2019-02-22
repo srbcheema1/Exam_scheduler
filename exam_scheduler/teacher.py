@@ -26,10 +26,10 @@ class Teacher:
         self.info = info
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
-        self._credits = credits_calc(rank)
+        self._credits = credits_calc(rank) / 10 # just for initial sorting
         self.alloted = {}
         self.alloted_res = set()
-        self.duties = 0
+        self.duties = 0 # count of real duties, except reserved ones
 
     def __str__(self):
         a = [
