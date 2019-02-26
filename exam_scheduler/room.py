@@ -31,6 +31,11 @@ class Room:
     def filled(self):
         return len(self.teachers_alloted)
 
+    def empty(self):
+        if len(self.teachers_alloted) == 0:
+            return True
+        return False
+
     def get_credits(self):
         self._credits = 0
         for teacher in self.teachers_alloted:
@@ -43,6 +48,7 @@ class Room:
         return False
 
     def __lt__(self,obj):
+        if self.empty() and not obj.empty(): return True # special case when self is totally empty it must get highest priority
         if self.unfilled() == obj.unfilled():
             if self.filled() == obj.filled():
                 return self.get_credits() < obj.get_credits()

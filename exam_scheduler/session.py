@@ -31,6 +31,7 @@ class Session:
     def __lt__(self,obj):
         self_top = self.room_pq.top()
         obj_top = obj.room_pq.top()
+        if self_top.empty() and not obj_top.empty(): return True # special case, empty room should be filled first
         if self_top.unfilled() == obj_top.unfilled() and self_top.filled() == obj_top.filled():
             if self.remaining == obj.remaining:
                 return self_top < obj_top
