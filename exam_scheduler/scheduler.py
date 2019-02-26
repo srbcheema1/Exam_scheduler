@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 
 from srblib import abs_path
 from srblib import Colour
@@ -24,6 +25,8 @@ class Scheduler:
         self.teachers_list = Scheduler._verified_file(teachers_list)
         self.schedule_list = Scheduler._verified_file(schedule_list)
         self._configure_paths()
+        self.print_tmap = False # if true then we will print tmap
+        self.tmap = {} # map containing types of rooms
 
     def _configure_paths(self):
         def configure_path(var_name):
@@ -99,16 +102,23 @@ class Scheduler:
     def dump_output(self,teachers_list,session_list,output_path):
         matrix = [["Name of Faculty Member","Info"]]
         if debug: matrix[0].extend(['rank','total','res','credits']) # srbdebug
+
         for session in session_list:
             matrix[0].append(session.name)
+            for room in session.room_list:
+                if room.get_type() in self.tmap:
+                    self.tmap[room.get_type()] += 1
+                else:
+                    self.tmap[room.get_type()] = 1
+
         matrix[0].append("Total")
 
         for teacher in teachers_list:
+            teachers_row = [teacher.name,teacher.info]
             if teacher.duties != len(teacher.alloted) - len(teacher.alloted_res):
                 print('ERROR: teacher unable to get enough slots as anticipated')
                 print(teacher)
                 sys.exit(1)
-            teachers_row = [teacher.name,teacher.info]
             if debug:
                 teachers_row.extend([
                     teacher.rank,
@@ -121,6 +131,13 @@ class Scheduler:
                 else: teachers_row.append('-')
             teachers_row.append(len(teacher.alloted))
             matrix.append(teachers_row)
+
+        lmap = json.dumps(self.tmap,indent=3,sort_keys=True)
+        Colour.print(lmap,Colour.GREEN)
+        if self.print_tmap:
+            matrix.extend([[],[],['type of room','number']])
+            for key in sorted(self.tmap):
+                matrix.append([key,self.tmap[key]])
 
         sheet = Tabular(matrix)
         sheet.write_xls(output_path)

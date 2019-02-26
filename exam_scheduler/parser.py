@@ -35,6 +35,9 @@ def get_parser():
     parser.add_argument("-d","--debug",
                         action='store_true',
                         help='print debug info')
+    parser.add_argument("-c","--count",
+                        action='store_true',
+                        help='print count info')
 
     verify_parser = parser.add_mutually_exclusive_group()
     verify_parser.add_argument("-vr",

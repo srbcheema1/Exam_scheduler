@@ -44,6 +44,13 @@ class Room:
         ret = copy.deepcopy(self)
         return ret
 
+    def get_type(self):
+        arr = []
+        for teacher in self.teachers_alloted:
+            arr.append(teacher.rank)
+        arr.sort()
+        return arr.__str__()
+
     def __str__(self):
         a = [
                 ["name",self.name],
