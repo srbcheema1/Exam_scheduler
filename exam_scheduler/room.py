@@ -23,6 +23,7 @@ class Room:
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
         self.teachers_alloted = []
+        self._credits = -1 # weitage of room
 
     def unfilled(self):
         return self.teachers - len(self.teachers_alloted)
@@ -30,14 +31,23 @@ class Room:
     def filled(self):
         return len(self.teachers_alloted)
 
+    def get_credits(self):
+        self._credits = 0
+        for teacher in self.teachers_alloted:
+            self._credits += credits_calc(teacher.rank)
+        return self._credits
+
     def __eq__(self,obj):
-        if self.unfilled() == obj.unfilled() and self.filled() == obj.filled():
+        if not self < obj and not obj < self:
             return True
         return False
 
     def __lt__(self,obj):
         if self.unfilled() == obj.unfilled():
-            return self.filled() < obj.filled()
+            if self.filled() == obj.filled():
+                return self.get_credits() < obj.get_credits()
+            else:
+                return self.filled() < obj.filled()
         return self.unfilled() > obj.unfilled()
 
     def copy(self):

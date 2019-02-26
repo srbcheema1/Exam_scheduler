@@ -73,7 +73,20 @@ class Scheduler:
         sorted_teachers_list.sort(key=lambda x: int(x.rank))
         session_pq = PriorityQueue(fabricate(session_list,self.seed))
 
+        def debug_pq(pq):
+            if not self.debug: return
+            need = 0
+            for item in pq._data:
+               session = item[1]
+               for room in session.room_list:
+                   need += room.unfilled()
+            print('Session PQ has rooms: ',need)
+
         debug_how = 0
+        for session in session_list:
+            for room in session.room_list:
+                debug_how += room.teachers
+
         for teacher in sorted_teachers_list:
             done_list = []
             for _ in range(teacher.duties):
@@ -90,12 +103,14 @@ class Scheduler:
                 room.teachers_alloted.append(teacher)
                 teacher.alloted[session.name] = room.name
                 session.remaining -= 1
-                debug_how += 1
+                debug_how -= 1
                 if room.unfilled() > 0: session.room_pq.push(room)
             for session in done_list:
                 if session.remaining > 0: session_pq.push(session)
             if(self.debug):print(teacher)
             if(self.debug):print('debug_how',debug_how)
+            if(self.debug):debug_pq(session_pq)
+
 
 
 

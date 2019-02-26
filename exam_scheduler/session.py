@@ -22,15 +22,21 @@ class Session:
         a[0].append(self.room_pq.top().name)
         a[0].append(self.room_pq.top().unfilled())
         a[0].append(self.room_pq.top().filled())
+        a[0].append(self.room_pq.top().get_type())
         for room in self.room_list:
             a[0].append(room.name + ' ' + str(room.teachers - len(room.teachers_alloted)))
         a = Tabular(a)
         return a.__str__()
 
     def __lt__(self,obj):
-        if self.room_pq.top() == obj.room_pq.top():
-            return self.remaining > obj.remaining
-        return self.room_pq.top() < obj.room_pq.top()
+        self_top = self.room_pq.top()
+        obj_top = obj.room_pq.top()
+        if self_top.unfilled() == obj_top.unfilled() and self_top.filled() == obj_top.filled():
+            if self.remaining == obj.remaining:
+                return self_top < obj_top
+            else:
+                return self.remaining > obj.remaining
+        return self_top < obj_top
 
     @staticmethod
     def get_sessions(matrix,room_data):
