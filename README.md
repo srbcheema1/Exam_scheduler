@@ -105,6 +105,7 @@ optional arguments:
   -r RESERVED, --reserved RESERVED
                         reserved number of seats for each session
   -d, --debug           print debug info
+  -i, --info            print info in excel
   -vr VR                verify room_list file
   -vs VS                verify schedule_list file
   -vt VT                verify teachers_list file
@@ -117,6 +118,32 @@ Using teachers_list : /home/srb/programs/exam_scheduler/input/teachers_list.csv
 Using schedule_list : /home/srb/programs/exam_scheduler/input/schedule_list.csv
 Using seed value : 5
 Using reserved value : 0
+rank count : {
+   "0": 33,
+   "1": 7,
+   "2": 23,
+   "3": 77,
+   "4": 59,
+   "5": 91
+}
+average duties : {
+   "0": 0.0,
+   "1": 2.0,
+   "2": 2.347,
+   "3": 3.0,
+   "4": 3.0,
+   "5": 3.0
+}
+type of rooms : {
+   "[1, 3, 5]": 1,
+   "[1, 4, 5]": 13,
+   "[2, 3, 5]": 1,
+   "[2, 4, 5]": 53,
+   "[3, 4, 5]": 85,
+   "[3, 4]": 25,
+   "[3, 5]": 119,
+   "[4, 5]": 1
+}
 Output written to : /home/srb/programs/exam_scheduler/result.xlsx
 ```
 

@@ -25,8 +25,7 @@ class Scheduler:
         self.teachers_list = Scheduler._verified_file(teachers_list)
         self.schedule_list = Scheduler._verified_file(schedule_list)
         self._configure_paths()
-        self.print_tmap = False # if true then we will print tmap
-        self.tmap = {} # map containing types of rooms
+        self.print_info = False # if true then we will print tmap
 
     def _configure_paths(self):
         def configure_path(var_name):
@@ -110,6 +109,7 @@ class Scheduler:
             if(self.debug):print(teacher)
             if(self.debug):print('debug_how',debug_how)
             if(self.debug):debug_pq(session_pq)
+            if(self.debug):print()
 
 
 
@@ -118,13 +118,28 @@ class Scheduler:
         matrix = [["Name of Faculty Member","Info"]]
         if debug: matrix[0].extend(['rank','total','res','credits']) # srbdebug
 
+        dmap = {} # map to contain count of avg duties of some rank
+        rmap = {} # map to contain count of teachers of some rank
+        for teacher in teachers_list:
+            rmap[teacher.rank] = 0
+            dmap[teacher.rank] = 0
+        for teacher in teachers_list:
+            rmap[teacher.rank] += 1
+            dmap[teacher.rank] += teacher.duties
+        def divide(a,b):
+            a = int((a*1000)/b)
+            return a/1000
+        for rank in rmap:
+            dmap[rank] = divide(dmap[rank],rmap[rank])
+
+        tmap = {} # map to contain count of room types
         for session in session_list:
             matrix[0].append(session.name)
             for room in session.room_list:
-                if room.get_type() in self.tmap:
-                    self.tmap[room.get_type()] += 1
+                if room.get_type() in tmap:
+                    tmap[room.get_type()] += 1
                 else:
-                    self.tmap[room.get_type()] = 1
+                    tmap[room.get_type()] = 1
 
         matrix[0].append("Total")
 
@@ -147,12 +162,26 @@ class Scheduler:
             teachers_row.append(len(teacher.alloted))
             matrix.append(teachers_row)
 
-        lmap = json.dumps(self.tmap,indent=3,sort_keys=True)
+        lmap = json.dumps(rmap,indent=3,sort_keys=True)
+        Colour.print('rank count : ',Colour.CYAN,end='')
         Colour.print(lmap,Colour.GREEN)
-        if self.print_tmap:
+
+        lmap = json.dumps(dmap,indent=3,sort_keys=True)
+        Colour.print('average duties : ',Colour.CYAN,end='')
+        Colour.print(lmap,Colour.GREEN)
+
+        lmap = json.dumps(tmap,indent=3,sort_keys=True)
+        Colour.print('type of rooms : ',Colour.CYAN,end='')
+        Colour.print(lmap,Colour.GREEN)
+
+        if self.print_info:
+            matrix.extend([[],[],['rank','count','avg duties']])
+            for key in sorted(rmap):
+                matrix.append([key,rmap[key],dmap[key]])
+
             matrix.extend([[],[],['type of room','number']])
-            for key in sorted(self.tmap):
-                matrix.append([key,self.tmap[key]])
+            for key in sorted(tmap):
+                matrix.append([key,tmap[key]])
 
         sheet = Tabular(matrix)
         sheet.write_xls(output_path)

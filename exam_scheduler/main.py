@@ -42,7 +42,7 @@ def main():
     try:
         scheduler = Scheduler(int(args.seed),int(args.reserved))
         if args.debug: scheduler.debug = True
-        if args.count: scheduler.print_tmap = True
+        if args.info: scheduler.print_info = True
         scheduler.schedule(default_output_xlsx_path)
         Colour.print('Output written to : ' + Colour.END + default_output_xlsx_path, Colour.BLUE)
     except KeyboardInterrupt:
