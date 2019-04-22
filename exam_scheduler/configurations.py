@@ -2,6 +2,7 @@ import os
 
 from srblib import abs_path
 from srblib import SrbJson
+from srblib import on_ci
 
 config_file_path = abs_path('~/.config/exam_scheduler/config.json')
 default_output_xlsx_path = abs_path('./output.xls')
@@ -13,6 +14,16 @@ _default_schedule_list = None
 if os.path.exists(abs_path('input/')):
     for fname in os.listdir(abs_path('input/')):
         fname = 'input/' + fname
+        if not _default_room_list and 'room_list' in fname:
+            _default_room_list = abs_path(fname)
+        elif not _default_teachers_list and 'teachers_list' in fname:
+            _default_teachers_list = abs_path(fname)
+        elif not _default_schedule_list and 'schedule_list' in fname:
+            _default_schedule_list = abs_path(fname)
+
+if on_ci and os.path.exists(abs_path('.ci')):
+    for fname in os.listdir(abs_path('.ci/')):
+        fname = '.ci/' + fname
         if not _default_room_list and 'room_list' in fname:
             _default_room_list = abs_path(fname)
         elif not _default_teachers_list and 'teachers_list' in fname:
