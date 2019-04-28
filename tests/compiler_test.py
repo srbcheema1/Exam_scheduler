@@ -7,5 +7,5 @@ from exam_scheduler.verifier import Compiler
 def test_room_compiler():
     if not on_ci:
         return
-    ans = Compiler.verify_room_list('.ci/room_list.xlsx')
-    assert(ans == True)
+    ans = Compiler.compile_room_list('.ci/room_list.xlsx')
+    assert(bool(ans) == True)

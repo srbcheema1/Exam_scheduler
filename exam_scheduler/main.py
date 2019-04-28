@@ -27,6 +27,9 @@ def main():
     if args.vt:
         Verifier.verify_teachers_list(args.vt)
         sys.exit()
+    if args.vw:
+        Verifier.verify_work_ratio(args.vw)
+        sys.exit()
 
     if args.seed <= 0:
         Colour.print('seed value should be a positive integer, got : ' + str(args.seed),Colour.RED)
@@ -43,6 +46,12 @@ def main():
         scheduler = Scheduler(int(args.seed),int(args.reserved))
         if args.debug: scheduler.debug = True
         if args.info: scheduler.print_info = True
+        scheduler._configure_paths() # done manually
+        res = scheduler.compileall()
+        if not res:
+            Colour.print('Error during compilation',Colour.RED)
+            print(res)
+            sys.exit(1)
         scheduler.schedule(default_output_xlsx_path)
         Colour.print('Output written to : ' + Colour.END + default_output_xlsx_path, Colour.BLUE)
     except KeyboardInterrupt:

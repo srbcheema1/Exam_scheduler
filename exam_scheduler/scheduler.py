@@ -13,21 +13,27 @@ from .configurations import default_output_xlsx_path
 from .priority_queue import PriorityQueue
 from .session import Session
 from .teacher import Teacher
-from .util import credits_calc
 from .util import randomize, fabricate
+from .verifier import Compiler
+from .work_ratio import WorkRatio
 
 class Scheduler:
-    def __init__(self,seed=5,reserved=0,room_list=None,teachers_list=None,schedule_list=None):
+    def __init__(self,seed=5,reserved=0,room_list=None,teachers_list=None,schedule_list=None,work_ratio=None):
         self.debug = False
         self.seed = int(seed)
         self.reserved = int(reserved)
         self.room_list = Scheduler._verified_file(room_list)
         self.teachers_list = Scheduler._verified_file(teachers_list)
         self.schedule_list = Scheduler._verified_file(schedule_list)
-        self._configure_paths()
+        self.work_ratio = Scheduler._verified_file(work_ratio)
+        self.workratio = None
+        # self._configure_paths() # called manually
         self.print_info = False # if true then we will print tmap
 
     def _configure_paths(self):
+        '''
+        to be called manually, not to be used in library
+        '''
         def configure_path(var_name):
             if not getattr(self,var_name):
                 if not config_json[var_name]:
@@ -39,7 +45,7 @@ class Scheduler:
                     setattr(self,var_name,config_json[var_name])
             else:
                 config_json[var_name] = getattr(self,var_name)
-        var_list = ['room_list','teachers_list','schedule_list']
+        var_list = ['room_list','teachers_list','schedule_list','work_ratio']
         for var_name in var_list:
             configure_path(var_name)
             Colour.print('Using ' + var_name + ' : ' + Colour.END + getattr(self,var_name), Colour.GREEN)
@@ -47,9 +53,28 @@ class Scheduler:
         Colour.print('Using reserved value : ' + Colour.END + str(self.reserved), Colour.GREEN)
 
 
+    def compileall(self):
+        res = Compiler.compile_room_list(self.room_list)
+        if not res: return res
+        res = Compiler.compile_work_ratio(self.work_ratio)
+        if not res: return res
+        res = Compiler.compile_teachers_list(self.teachers_list)
+        if not res: return res
+        res = Compiler.compile_schedule_list(self.schedule_list)
+        if not res: return res
+        res = Compiler.crosscompile(self.teachers_list,
+                                    self.room_list,
+                                    self.schedule_list,
+                                    self.work_ratio
+                                    )
+        return res
+
+
+
     def schedule(self,output_path=default_output_xlsx_path):
-        teachers_list = Teacher.get_teachers(self.teachers_list)
-        session_list = Session.get_sessions(self.schedule_list,self.room_list)
+        self.workratio = WorkRatio(self.work_ratio)
+        teachers_list = Teacher.get_teachers(self.teachers_list,self.workratio)
+        session_list = Session.get_sessions(self.schedule_list,self.room_list,self.workratio)
 
         # for scheduling reserved using -r option
         self.schedule_reserved(teachers_list,session_list)
@@ -200,7 +225,7 @@ class Scheduler:
                     while session.name in teacher.alloted_res: # teacher should not get sametime res and room
                         done_list.append(teacher)
                         teacher = teachers_pq.pop()
-                    teacher._credits += credits_calc(teacher.rank)
+                    teacher._credits += self.workratio.credits_calc(teacher.rank)
                     teacher.duties += 1
                     done_list.append(teacher)
             for teacher in done_list:
@@ -220,7 +245,7 @@ class Scheduler:
                 3. no priority to better rank teachers.
                 4. makes priority queue difficult to schedule if reserved room contain more teachers than other rooms
         '''
-        teachers_list_res = Teacher.get_teachers(self.teachers_list) # create totally new one
+        teachers_list_res = Teacher.get_teachers(self.teachers_list,self.workratio) # create totally new one
         for i in range(len(teachers_list_res)):
             teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
         teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res,self.seed+1))
@@ -229,11 +254,11 @@ class Scheduler:
             done_list = []
             for j in range(self.reserved):
                 teacher = teachers_reserved_pq.pop()
-                teacher._credits += credits_calc(max_rank-teacher.rank + 1)
+                teacher._credits += self.workratio.credits_calc(max_rank-teacher.rank + 1)
                 done_list.append(teacher)
                 teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
                 teachers_list[teacher.idd-2].alloted_res.add(session.name)
-                teachers_list[teacher.idd-2]._credits += credits_calc(teacher.rank) / 2 # should get half credits for reserved seat
+                teachers_list[teacher.idd-2]._credits += self.workratio.credits_calc(teacher.rank) / 2 # should get half credits for reserved seat
             for teacher in done_list:
                 teachers_reserved_pq.push(teacher)
 

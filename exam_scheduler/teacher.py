@@ -1,9 +1,6 @@
 from srblib import Tabular
 from srblib import debug
 
-from .util import credits_calc
-from .verifier import Verifier
-
 class Teacher:
     def __init__(self,idd,name,rank,info="",**kwargs):
 
@@ -26,7 +23,7 @@ class Teacher:
         self.info = info
         self.extra = list(kwargs.keys())
         self.__dict__.update(kwargs)
-        self._credits = credits_calc(rank) / 10 # just for initial sorting
+        self._credits = 0
         self.alloted = {}
         self.alloted_res = set()
         self.duties = 0 # count of real duties, except reserved ones
@@ -54,12 +51,12 @@ class Teacher:
         return self._credits < obj._credits
 
     @staticmethod
-    def get_teachers(matrix):
+    def get_teachers(matrix,workratio):
         '''
         input should be a Tabular object, or a path
+        workratio is WorkRatio object
         '''
         if type(matrix) is str:
-            Verifier.verify_teachers_list(matrix)
             temp = Tabular()
             temp.load_xls(matrix,strict=True)
             matrix = temp
@@ -68,7 +65,6 @@ class Teacher:
         cols = len(header)
         if(cols < 2):
                 raise Exception('too few columns')
-        matrix = matrix[1:]
         idd = 2
         for row in matrix:
             info = ""
@@ -80,6 +76,7 @@ class Teacher:
                     kwargs[header[i]] = row[i]
                     i += 1
             temp = Teacher(idd,row[0],row[1],info,**kwargs)
+            temp._credits = workratio.credits_calc(temp.rank) / 10 # just for initial sort
             ret.append(temp)
             idd += 1
 

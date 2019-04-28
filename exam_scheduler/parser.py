@@ -49,6 +49,9 @@ def get_parser():
     verify_parser.add_argument("-vt",
                         type=lambda x: _is_valid_file(parser,x),
                         help='verify teachers_list file')
+    verify_parser.add_argument("-vw",
+                        type=lambda x: _is_valid_file(parser,x),
+                        help='verify work_ratio file')
 
     autocomplete(parser)
     return parser.parse_args()

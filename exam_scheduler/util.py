@@ -1,22 +1,4 @@
 from random import Random
-from srblib import SrbJson
-
-work_ratio_template = {
-    1:100,
-    2:150,
-    3:200,
-    4:250,
-    5:300,
-    6:350,
-    7:400,
-}
-work_ratio = SrbJson('~/.config/exam_scheduler/work_ratio.json',work_ratio_template)
-
-def credits_calc(rank,workratio=work_ratio):
-    try: rank = int(rank)
-    except: raise Exception("Rank should be integer")
-    if rank == 0: return 9999999
-    return (100*workratio["1"])/workratio[str(rank)]
 
 def fabricate(arr,seed=5):
     seed = int(seed)
@@ -44,3 +26,29 @@ def randomize(arr,seed=None):
         arr[i],arr[j] = arr[j],arr[i]
     return arr
 
+
+class Response:
+    def __init__(self,execption=None):
+        self.__message = []
+        self.exception = execption
+
+    def addMessage(self, msg):
+        self.__message.append(msg)
+        return self
+
+    def __str__(self):
+        return '\n'.join(self.__message)
+
+    def __bool__(self):
+        return len(self.__message)==0 and not self.exception
+
+    def safe(self):
+        if self.exception:
+            raise self.exception
+        return bool(self)
+
+    def json(self):
+        return {
+            'message':str(self),
+            'status':bool(self)
+        }

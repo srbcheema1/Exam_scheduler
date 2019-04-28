@@ -40,10 +40,11 @@ class Session:
         return self_top < obj_top
 
     @staticmethod
-    def get_sessions(matrix,room_data):
+    def get_sessions(matrix,room_data,workratio):
         '''
         input matrix should be a Tabular object, or a path
         room_data should be a tabular object or a path
+        workratio is obj of WorkRatio
         '''
         if type(matrix) is str:
             Verifier.verify_schedule_list(matrix)
@@ -51,7 +52,7 @@ class Session:
             temp.load_xls(matrix,strict=True)
             matrix = temp
         if type(room_data) is str:
-            room_data = Room.get_rooms(room_data)
+            room_data = Room.get_rooms(room_data,workratio)
 
         room_json = {}
         for room in room_data:

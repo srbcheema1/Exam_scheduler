@@ -2,7 +2,6 @@ from srblib import Tabular
 
 import copy
 
-from .util import credits_calc
 from .verifier import Verifier
 
 class Room:
@@ -24,6 +23,7 @@ class Room:
         self.__dict__.update(kwargs)
         self.teachers_alloted = []
         self._credits = -1 # weitage of room
+        self.workratio = None # WorkRatio object
 
     def unfilled(self):
         return self.teachers - len(self.teachers_alloted)
@@ -39,7 +39,7 @@ class Room:
     def get_credits(self):
         self._credits = 0
         for teacher in self.teachers_alloted:
-            self._credits += credits_calc(teacher.rank)
+            self._credits += self.workratio.credits_calc(teacher.rank)
         return self._credits
 
     def __eq__(self,obj):
@@ -81,9 +81,10 @@ class Room:
         return a.__str__()
 
     @staticmethod
-    def get_rooms(matrix):
+    def get_rooms(matrix,workratio):
         '''
         input should be a Tabular object, or a path
+        workratio is object of WorkRatio
         '''
         if type(matrix) is str:
             Verifier.verify_room_list(matrix)
@@ -107,6 +108,7 @@ class Room:
                     kwargs[header[i]] = row[i]
                     i += 1
             temp = Room(row[0],row[1],capacity,**kwargs)
+            temp.workratio = workratio
             ret.append(temp)
 
         return ret
