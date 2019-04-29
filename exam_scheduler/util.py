@@ -1,4 +1,5 @@
 from random import Random
+from srblib import Tabular
 
 def fabricate(arr,seed=5):
     seed = int(seed)
@@ -44,6 +45,7 @@ class Response:
 
     def safe(self):
         if self.exception:
+            print(Tabular([[str(self)]]))
             raise self.exception
         return bool(self)
 
