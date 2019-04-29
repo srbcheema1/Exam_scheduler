@@ -23,7 +23,7 @@ class Compiler:
             r.addMessage("In room_list : " + str(1) + " :")
             r.addMessage("Too few columns, require at least 2 cols for name and teachers")
             r.addMessage("Found " + str(cols) + " cols")
-            r.addMessage("\n")
+            r.addMessage("")
             return r
 
         found = set()
@@ -36,7 +36,7 @@ class Compiler:
                     r.addMessage("In room_list : " + str(rownum) + " : " + str(2) + " : ")
                     r.addMessage("Second column should contain non-negative integer value")
                     r.addMessage("Found : '" + str(row[1]) + "'")
-                    r.addMessage("\n")
+                    r.addMessage("")
             except:
                 r.addMessage("In room_list : " + str(rownum) + " : " + str(2) + " :")
                 r.addMessage("Second column should contain non-negative integer value")
@@ -48,7 +48,7 @@ class Compiler:
                 r.addMessage("In room_list : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First column should contain unique value")
                 r.addMessage("Found : '" + str(row[0]) + "' twice")
-                r.addMessage("\n")
+                r.addMessage("")
 
             found.add(row[0])
 
@@ -65,7 +65,7 @@ class Compiler:
             r.addMessage("In work_ratio : " + str(1) + " :")
             r.addMessage("Too few columns, require at least 2 cols for rank and work_ratio")
             r.addMessage("Found " + str(cols) + " cols")
-            r.addMessage("\n")
+            r.addMessage("")
             return r
 
         found = set()
@@ -78,12 +78,12 @@ class Compiler:
                     r.addMessage("In work_ratio : " + str(rownum) + " : " + str(1) + " :")
                     r.addMessage("First(rank) column should contain non-negative integer value")
                     r.addMessage("Found : '" + str(row[0]) + "'")
-                    r.addMessage("\n")
+                    r.addMessage("")
             except:
                 r.addMessage("In work_ratio : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First(rank) column should contain non-negative integer value")
                 r.addMessage("Found : '" + str(row[0]) + "'")
-                r.addMessage("\n")
+                r.addMessage("")
 
 
             try:
@@ -92,19 +92,19 @@ class Compiler:
                     r.addMessage("In work_ratio : " + str(rownum) + " : " + str(2) + " :")
                     r.addMessage("Second(ratio) column should contain non-negative float value")
                     r.addMessage("Found : '" + str(row[1]) + "'")
-                    r.addMessage("\n")
+                    r.addMessage("")
             except:
                 r.addMessage("In work_ratio : " + str(rownum) + " : " + str(2) + " :")
                 r.addMessage("Second(ratio) column should contain non-negative float value")
                 r.addMessage("Found : '" + str(row[1]) + "'")
-                r.addMessage("\n")
+                r.addMessage("")
 
 
             if row[0] in found:
                 r.addMessage("In work_ratio : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First column should contain unique value")
                 r.addMessage("Found : '" + str(row[0]) + "' twice")
-                r.addMessage("\n")
+                r.addMessage("")
 
             found.add(row[0])
 
@@ -122,7 +122,7 @@ class Compiler:
             r.addMessage("In teachers_list : " + str(1) + " :")
             r.addMessage("Too few columns, require at least 2 columns for name and rank")
             r.addMessage("Found " + str(cols) + " cols")
-            r.addMessage("\n")
+            r.addMessage("")
             return r
 
         found = set()
@@ -135,19 +135,19 @@ class Compiler:
                     r.addMessage("In teachers_list : " + str(rownum) + " : " + str(2) + " :")
                     r.addMessage("Second(rank) column should contain non-negative integer value")
                     r.addMessage("Found : '" + str(row[1]) + "'")
-                    r.addMessage("\n")
+                    r.addMessage("")
             except:
                 r.addMessage("In teachers_list : " + str(rownum) + " : " + str(2) + " :")
                 r.addMessage("Second(rank) column should contain non-negative integer value")
                 r.addMessage("Found : '" + str(row[1]) + "'")
-                r.addMessage("\n")
+                r.addMessage("")
 
 
             if row[0] in found:
                 r.addMessage("In teachers_list : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First(name) column should contain unique value")
                 r.addMessage("Found : '" + str(row[0]) + "' twice")
-                r.addMessage("\n")
+                r.addMessage("")
 
             found.add(row[0])
         return r
@@ -164,7 +164,7 @@ class Compiler:
             r.addMessage("In schedule_list : " + str(1) + " : ")
             r.addMessage("Too few columns, require at least 2 columns for session_name and rooms")
             r.addMessage("Found " + str(cols) + " cols")
-            r.addMessage("\n")
+            r.addMessage("")
             return r
 
         found = set()
@@ -175,7 +175,7 @@ class Compiler:
                 r.addMessage("In schedule_list : " + str(1) + " : " + str(colnum) + " :")
                 r.addMessage("Room names should be value")
                 r.addMessage("Found : '" + str(head) + "' twice")
-                r.addMessage("\n")
+                r.addMessage("")
             found.add(head)
 
         found = set()
@@ -186,7 +186,7 @@ class Compiler:
                 r.addMessage("In schedule_list : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First(session_name) column should have unique value")
                 r.addMessage("Found : '" + str(row[0]) + "' twice")
-                r.addMessage("\n")
+                r.addMessage("")
 
             colnum = 1
             for cell in row[1:]:
@@ -195,7 +195,7 @@ class Compiler:
                     r.addMessage("In schedule_list : " + str(rownum) + " : " + str(colnum) + " :")
                     r.addMessage("Cell(other than session-name) can be blank, Y, y, N or n only")
                     r.addMessage("Found : '" + str(row[0]) + "' twice")
-                    r.addMessage("\n")
+                    r.addMessage("")
 
             found.add(row[0])
         return r
@@ -221,14 +221,14 @@ class Compiler:
             if rank == 0: continue
             if rank not in ratio_rank:
                 r.addMessage("'" + str(rank) + "' not present in work_ratio file, (present in teachers_list)")
-                r.addMessage("\n")
+                r.addMessage("")
 
         rooms = set()
         for room in room_list[1:]: rooms.add(str(room[0]))
         for room in schedule_list[0][1:]:
             if room not in rooms:
                 r.addMessage("'" + str(room) + "' not present in room_list file, (present in schedule_list)")
-                r.addMessage("\n")
+                r.addMessage("")
 
         return r
 
@@ -241,7 +241,7 @@ class Compiler:
         except Exception as e:
             r = Response(e)
             r.addMessage("[Exception] Unable to load file")
-            r.addMessage("\n")
+            r.addMessage("")
             return r
 
 

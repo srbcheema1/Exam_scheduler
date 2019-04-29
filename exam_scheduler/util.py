@@ -38,7 +38,13 @@ class Response:
         return self
 
     def __str__(self):
-        return '\n'.join(self.__message)
+        ans = ""
+        # if len(self.__message) > 0:
+            # ans += "[ERROR]\n\n"
+        ans += '\n'.join(self.__message)
+        # if len(self.__message) > 0:
+            # ans += "\n[NOTE] Row nums are not exact, Empty rows are not counted\n"
+        return ans
 
     def __bool__(self):
         return len(self.__message)==0 and not self.exception
