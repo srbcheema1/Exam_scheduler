@@ -2,7 +2,9 @@ from srblib import Tabular
 
 class WorkRatio:
     def __init__(self,filepath):
-        matrix = Tabular(filepath).matrix[1:]
+        matrix = Tabular()
+        matrix.load_xls(filepath,strict=True)
+        matrix = matrix.matrix[1:]
         self.ratio = {}
         self.credits = {0:999999}
         for x in matrix:
