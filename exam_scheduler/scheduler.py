@@ -8,8 +8,6 @@ from srblib import SrbJson
 from srblib import Tabular
 from srblib import debug
 
-from .configurations import config_json
-from .configurations import default_output_xlsx_path
 from .priority_queue import PriorityQueue
 from .session import Session
 from .teacher import Teacher
@@ -34,6 +32,7 @@ class Scheduler:
         '''
         to be called manually, not to be used in library
         '''
+        from .configurations import config_json
         def configure_path(var_name):
             if not getattr(self,var_name):
                 if not config_json[var_name]:
@@ -71,7 +70,7 @@ class Scheduler:
 
 
 
-    def schedule(self,output_path=default_output_xlsx_path):
+    def schedule(self,output_path):
         self.workratio = WorkRatio(self.work_ratio)
         teachers_list = Teacher.get_teachers(self.teachers_list,self.workratio)
         session_list = Session.get_sessions(self.schedule_list,self.room_list,self.workratio)
