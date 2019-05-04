@@ -199,13 +199,13 @@ class Scheduler:
         Colour.print(lmap,Colour.GREEN)
 
         if self.print_info:
-            matrix.extend([[],[],['rank','count','avg duties']])
+            matrix.extend([[],[],['','rank','count','avg duties']])
             for key in sorted(rmap):
-                matrix.append([key,rmap[key],dmap[key]])
+                matrix.append(['',key,rmap[key],dmap[key]])
 
-            matrix.extend([[],[],['type of room','number']])
+            matrix.extend([[],[],['','type of room','number']])
             for key in sorted(tmap):
-                matrix.append([key,tmap[key]])
+                matrix.append(['',key,tmap[key]])
 
         sheet = Tabular(matrix)
         sheet.write_xls(output_path)

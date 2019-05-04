@@ -20,6 +20,7 @@ class Compiler:
         cols = len(header)
 
         if(cols < 2):
+            r.addMessage("Error: Insufficient Data")
             r.addMessage("In room_list : " + str(1) + " :")
             r.addMessage("Too few columns, require at least 2 cols for name and teachers")
             r.addMessage("Found " + str(cols) + " cols")
@@ -33,11 +34,13 @@ class Compiler:
             try:
                 int_val = int(row[1])
                 if int_val < 0:
+                    r.addMessage("Error: Invalid Data")
                     r.addMessage("In room_list : " + str(rownum) + " : " + str(2) + " : ")
                     r.addMessage("Second column should contain non-negative integer value")
                     r.addMessage("Found : '" + str(row[1]) + "'")
                     r.addMessage("")
             except:
+                r.addMessage("Error: Invalid Data")
                 r.addMessage("In room_list : " + str(rownum) + " : " + str(2) + " :")
                 r.addMessage("Second column should contain non-negative integer value")
                 r.addMessage("Found : '" + str(row[1]) + "'")
@@ -45,9 +48,10 @@ class Compiler:
 
 
             if row[0] in found:
+                r.addMessage("Error: Required Unique Value")
                 r.addMessage("In room_list : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First column should contain unique value")
-                r.addMessage("Found : '" + str(row[0]) + "' twice")
+                r.addMessage("Found : '" + str(row[0]) + "' multiple times")
                 r.addMessage("")
 
             found.add(row[0])
@@ -62,6 +66,7 @@ class Compiler:
         cols = len(header)
 
         if(cols < 2):
+            r.addMessage("Error: Insufficient Data")
             r.addMessage("In work_ratio : " + str(1) + " :")
             r.addMessage("Too few columns, require at least 2 cols for rank and work_ratio")
             r.addMessage("Found " + str(cols) + " cols")
@@ -75,11 +80,13 @@ class Compiler:
             try:
                 int_val = int(row[0])
                 if int_val < 0:
+                    r.addMessage("Error: Invalid Data")
                     r.addMessage("In work_ratio : " + str(rownum) + " : " + str(1) + " :")
                     r.addMessage("First(rank) column should contain non-negative integer value")
                     r.addMessage("Found : '" + str(row[0]) + "'")
                     r.addMessage("")
             except:
+                r.addMessage("Error: Invalid Data")
                 r.addMessage("In work_ratio : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First(rank) column should contain non-negative integer value")
                 r.addMessage("Found : '" + str(row[0]) + "'")
@@ -89,11 +96,13 @@ class Compiler:
             try:
                 int_val = float(row[1])
                 if int_val < 0:
+                    r.addMessage("Error: Invalid Data")
                     r.addMessage("In work_ratio : " + str(rownum) + " : " + str(2) + " :")
                     r.addMessage("Second(ratio) column should contain non-negative float value")
                     r.addMessage("Found : '" + str(row[1]) + "'")
                     r.addMessage("")
             except:
+                r.addMessage("Error: Invalid Data")
                 r.addMessage("In work_ratio : " + str(rownum) + " : " + str(2) + " :")
                 r.addMessage("Second(ratio) column should contain non-negative float value")
                 r.addMessage("Found : '" + str(row[1]) + "'")
@@ -101,9 +110,10 @@ class Compiler:
 
 
             if row[0] in found:
+                r.addMessage("Error: Required Unique Value")
                 r.addMessage("In work_ratio : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First column should contain unique value")
-                r.addMessage("Found : '" + str(row[0]) + "' twice")
+                r.addMessage("Found : '" + str(row[0]) + "' multiple times")
                 r.addMessage("")
 
             found.add(row[0])
@@ -119,6 +129,7 @@ class Compiler:
         cols = len(header)
 
         if(cols < 2):
+            r.addMessage("Error: Insufficient Data")
             r.addMessage("In teachers_list : " + str(1) + " :")
             r.addMessage("Too few columns, require at least 2 columns for name and rank")
             r.addMessage("Found " + str(cols) + " cols")
@@ -132,11 +143,13 @@ class Compiler:
             try:
                 int_val = int(row[1])
                 if int_val < 0:
+                    r.addMessage("Error: Invalid Data")
                     r.addMessage("In teachers_list : " + str(rownum) + " : " + str(2) + " :")
                     r.addMessage("Second(rank) column should contain non-negative integer value")
                     r.addMessage("Found : '" + str(row[1]) + "'")
                     r.addMessage("")
             except:
+                r.addMessage("Error: Invalid Data")
                 r.addMessage("In teachers_list : " + str(rownum) + " : " + str(2) + " :")
                 r.addMessage("Second(rank) column should contain non-negative integer value")
                 r.addMessage("Found : '" + str(row[1]) + "'")
@@ -144,9 +157,10 @@ class Compiler:
 
 
             if row[0] in found:
+                r.addMessage("Error: Required Unique Value")
                 r.addMessage("In teachers_list : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First(name) column should contain unique value")
-                r.addMessage("Found : '" + str(row[0]) + "' twice")
+                r.addMessage("Found : '" + str(row[0]) + "' multiple times")
                 r.addMessage("")
 
             found.add(row[0])
@@ -161,6 +175,7 @@ class Compiler:
         cols = len(header)
 
         if(cols < 2):
+            r.addMessage("Error: Insufficient Data")
             r.addMessage("In schedule_list : " + str(1) + " : ")
             r.addMessage("Too few columns, require at least 2 columns for session_name and rooms")
             r.addMessage("Found " + str(cols) + " cols")
@@ -172,9 +187,10 @@ class Compiler:
         for head in header:
             colnum+=1
             if head in found:
+                r.addMessage("Error: Invalid Data")
                 r.addMessage("In schedule_list : " + str(1) + " : " + str(colnum) + " :")
-                r.addMessage("Room names should be value")
-                r.addMessage("Found : '" + str(head) + "' twice")
+                r.addMessage("Room names should be unique")
+                r.addMessage("Found : '" + str(head) + "' multiple times")
                 r.addMessage("")
             found.add(head)
 
@@ -183,18 +199,20 @@ class Compiler:
         for row in matrix[1:]:
             rownum += 1
             if row[0] in found:
+                r.addMessage("Error: Required Unique Value")
                 r.addMessage("In schedule_list : " + str(rownum) + " : " + str(1) + " :")
                 r.addMessage("First(session_name) column should have unique value")
-                r.addMessage("Found : '" + str(row[0]) + "' twice")
+                r.addMessage("Found : '" + str(row[0]) + "' multiple times")
                 r.addMessage("")
 
             colnum = 1
             for cell in row[1:]:
                 colnum+=1
                 if cell and cell not in ('Y','y','N','n'):
+                    r.addMessage("Error: Invalid Data")
                     r.addMessage("In schedule_list : " + str(rownum) + " : " + str(colnum) + " :")
                     r.addMessage("Cell(other than session-name) can be blank, Y, y, N or n only")
-                    r.addMessage("Found : '" + str(row[0]) + "' twice")
+                    r.addMessage("Found : '" + str(row[0]) + "'")
                     r.addMessage("")
 
             found.add(row[0])
@@ -220,6 +238,7 @@ class Compiler:
         for rank in rank_list:
             if rank == 0: continue
             if rank not in ratio_rank:
+                r.addMessage("Error: Insufficient Data")
                 r.addMessage("'" + str(rank) + "' not present in work_ratio file, (present in teachers_list)")
                 r.addMessage("")
 
@@ -227,6 +246,7 @@ class Compiler:
         for room in room_list[1:]: rooms.add(str(room[0]))
         for room in schedule_list[0][1:]:
             if room not in rooms:
+                r.addMessage("Error: Insufficient Data")
                 r.addMessage("'" + str(room) + "' not present in room_list file, (present in schedule_list)")
                 r.addMessage("")
 
