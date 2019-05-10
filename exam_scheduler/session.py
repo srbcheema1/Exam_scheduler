@@ -1,4 +1,5 @@
 import sys
+import re
 
 from srblib import Colour
 from srblib import Tabular
@@ -7,9 +8,14 @@ from .room import Room
 from .priority_queue import PriorityQueue
 from .verifier import Verifier
 
+
 class Session:
     def __init__(self,name,room_list):
         self.name = name
+        self.base = re.sub(r'\((.*?)\)','',name)
+        batch = re.search(r'\((.*?)\)',name).group(1)
+        self.batch = batch if batch else ""
+
         self.room_list = room_list
         self.remaining = 0 # slots not filled
         for room in room_list:
@@ -63,8 +69,7 @@ class Session:
         cols = len(header) + 1
         if(cols < 2):
                 raise Exception('too few columns')
-        for i in range(1,len(matrix)):
-            row = matrix[i]
+        for row in matrix:
             room_list = []
             for room in header:
                 need = row[room]
@@ -72,9 +77,7 @@ class Session:
                     if room in room_json:
                         room_list.append(room_json[room].copy())
                     else:
-                        # raise Exception('Room ' +room+ ' not present in rooms file')
-                        Colour.print('Room ' + room + ' not present in room list',Colour.RED)
-                        sys.exit()
+                        raise Exception('Room ' +room+ ' not present in rooms file')
 
             temp = Session(row[0], room_list)
             ret.append(temp)

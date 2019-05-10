@@ -1,6 +1,7 @@
 from random import Random
 from srblib import Tabular
 
+
 def fabricate(arr,seed=5):
     seed = int(seed)
     if seed >= len(arr)/2: seed = len(arr)//3
@@ -14,7 +15,21 @@ def fabricate(arr,seed=5):
         i -= 1
     return ret
 
-def randomize(arr,seed=None):
+
+def fabricate_adv(arr,key,seed=5):
+    lists = dict()
+    for item in arr:
+        if not key(item) in lists:
+            lists[key(item)] = [item]
+            continue
+        lists[key(item)].append(item)
+    ret = []
+    for k in lists:
+        ret.extend(fabricate(lists[k],seed))
+    return ret
+
+
+def randomize(arr,seed=5):
     r = Random()
     if seed: r.seed(str(seed))
     arr = fabricate(arr,7)
@@ -25,6 +40,7 @@ def randomize(arr,seed=None):
     for i in range(n-1,0,-1):
         j = r.randint(0,i)
         arr[i],arr[j] = arr[j],arr[i]
+    r.shuffle(arr)
     return arr
 
 

@@ -48,7 +48,7 @@ class Room:
         return False
 
     def __lt__(self,obj):
-        if self.empty() and not obj.empty(): return True # special case when self is totally empty it must get highest priority
+        if self.empty() and not obj.empty(): return True # special case when self is empty, it must get high priority
         if self.unfilled() == obj.unfilled():
             if self.filled() == obj.filled():
                 return self.get_credits() < obj.get_credits()

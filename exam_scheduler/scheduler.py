@@ -11,7 +11,7 @@ from srblib import debug
 from .priority_queue import PriorityQueue
 from .session import Session
 from .teacher import Teacher
-from .util import randomize, fabricate
+from .util import randomize, fabricate, fabricate_adv
 from .verifier import Compiler
 from .work_ratio import WorkRatio
 
@@ -92,9 +92,9 @@ class Scheduler:
         '''
         Srb's round-n-robin algorithm
         '''
-        sorted_teachers_list = teachers_list[:]
+        sorted_teachers_list = fabricate(teachers_list[:],self.seed)
         sorted_teachers_list.sort(key=lambda x: int(x.rank))
-        session_pq = PriorityQueue(fabricate(session_list,self.seed))
+        session_pq = PriorityQueue(fabricate_adv(session_list,lambda x: x.batch,self.seed))
 
         def debug_pq(pq):
             if not self.debug: return
