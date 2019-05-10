@@ -45,7 +45,6 @@ def main():
     try:
         scheduler = Scheduler(int(args.seed),int(args.reserved))
         if args.debug: scheduler.debug = True
-        if args.info: scheduler.print_info = True
         scheduler._configure_paths() # done manually
         res = scheduler.compileall()
         if not res:

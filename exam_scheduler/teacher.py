@@ -27,6 +27,7 @@ class Teacher:
         self._credits = 0
         self.alloted = {}
         self.alloted_res = set()
+        self.alloted_base = set()
         self.duties = 0 # count of real duties, except reserved ones
 
     def __str__(self):

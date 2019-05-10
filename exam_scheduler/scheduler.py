@@ -26,7 +26,7 @@ class Scheduler:
         self.work_ratio = Scheduler._verified_file(work_ratio)
         self.workratio = None
         # self._configure_paths() # called manually
-        self.print_info = False # if true then we will print tmap
+        self.adv = True # used in round_n_robin for advanced algo.
 
     def _configure_paths(self):
         '''
@@ -71,6 +71,14 @@ class Scheduler:
 
 
     def schedule(self,output_path):
+        try:
+            self._schedule(output_path)
+        except:
+            Colour.print('Turning off adv-algo',Colour.YELLOW)
+            self.adv = False
+            self._schedule(output_path)
+
+    def _schedule(self,output_path):
         self.workratio = WorkRatio(self.work_ratio)
         teachers_list = Teacher.get_teachers(self.teachers_list,self.workratio)
         session_list = Session.get_sessions(self.schedule_list,self.room_list,self.workratio)
@@ -91,6 +99,7 @@ class Scheduler:
     def round_n_robin(self,teachers_list,session_list):
         '''
         Srb's round-n-robin algorithm
+        self.adv means advance, it will not allow teachers in same session
         '''
         sorted_teachers_list = fabricate(teachers_list[:],self.seed)
         sorted_teachers_list.sort(key=lambda x: int(x.rank))
@@ -114,7 +123,7 @@ class Scheduler:
             done_list = []
             for _ in range(teacher.duties):
                 session = session_pq.pop()
-                while(session.name in teacher.alloted_res):
+                while(session.name in teacher.alloted_res or (self.adv and session.base in teacher.alloted_base)):
                     if(self.debug): print('skipped session\n',session)
                     done_list.append(session)
                     session = session_pq.pop()
@@ -125,6 +134,7 @@ class Scheduler:
                 room = session.room_pq.pop()
                 room.teachers_alloted.append(teacher)
                 teacher.alloted[session.name] = room.name
+                teacher.alloted_base.add(session.base)
                 session.remaining -= 1
                 debug_how -= 1
                 if room.unfilled() > 0: session.room_pq.push(room)
@@ -200,14 +210,18 @@ class Scheduler:
         Colour.print('type of rooms : ',Colour.CYAN,end='')
         Colour.print(lmap,Colour.GREEN)
 
-        if self.print_info:
-            matrix.extend([[],[],['','rank','count','avg duties']])
-            for key in sorted(rmap):
-                matrix.append(['',key,rmap[key],dmap[key]])
+        matrix.extend([[],[],['','rank','count','avg duties']])
+        for key in sorted(rmap):
+            matrix.append(['',key,rmap[key],dmap[key]])
 
-            matrix.extend([[],[],['','type of room','number']])
-            for key in sorted(tmap):
-                matrix.append(['',key,tmap[key]])
+        matrix.extend([[],[],['','type of room','number']])
+        for key in sorted(tmap):
+            matrix.append(['',key,tmap[key]])
+
+        if not self.adv:
+            matrix.extend([[],[],['','WARNING:',' avd-algo turned off']])
+            matrix.extend([['','','You may get teacher duty twice in a day']])
+            matrix.extend([['','','Please report this to srbcheema2@gmail.com']])
 
         sheet = Tabular(matrix)
         sheet.write_xls(output_path)

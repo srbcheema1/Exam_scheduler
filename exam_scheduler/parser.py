@@ -35,9 +35,6 @@ def get_parser():
     parser.add_argument("-d","--debug",
                         action='store_true',
                         help='print debug info')
-    parser.add_argument("-i","--info",
-                        action='store_true',
-                        help='print info in excel')
 
     verify_parser = parser.add_mutually_exclusive_group()
     verify_parser.add_argument("-vr",
