@@ -166,6 +166,7 @@ class Scheduler:
                     tmap[room.get_type()] = 1
 
         matrix[0].append("Total")
+        matrix[0].append("mail")
 
         for teacher in teachers_list:
             teachers_row = [teacher.name,teacher.info]
@@ -184,6 +185,7 @@ class Scheduler:
                 if session.name in teacher.alloted: teachers_row.append(teacher.alloted[session.name])
                 else: teachers_row.append('-')
             teachers_row.append(len(teacher.alloted))
+            teachers_row.append(teacher.mail)
             matrix.append(teachers_row)
 
         lmap = json.dumps(rmap,indent=3,sort_keys=True)

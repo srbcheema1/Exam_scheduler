@@ -19,6 +19,7 @@ class Teacher:
         self.name = name
         self.rank = int(rank)
         self.info = info
+        self.mail = None # used for mailing teachers
         self.subclass = "" # extract out if something after name in brackets
         self.info = info
         self.extra = list(kwargs.keys())

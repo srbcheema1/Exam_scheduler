@@ -52,6 +52,8 @@ _config_template = \
     'teachers_list':_default_teachers_list,
     'schedule_list':_default_schedule_list,
     'work_ratio':_default_work_ratio,
+    'email':'examscheduler@nith.ac.in',
+    'password':''
 }
 
 config_json = SrbJson(config_file_path,_config_template)
