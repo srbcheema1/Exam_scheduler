@@ -24,15 +24,17 @@ class Session:
 
     def __str__(self):
         a = [[self.name]]
-        a[0].append(self.remaining)
-        a[0].append(self.room_pq.top().name)
-        a[0].append(self.room_pq.top().unfilled())
-        a[0].append(self.room_pq.top().filled())
-        a[0].append(self.room_pq.top().get_type())
+        a[0].append('rem ' + str(self.remaining))
+        a[0].append('top_pq ' + self.room_pq.top().name)
+        a[0].append('top_pq_unfill ' + str(self.room_pq.top().unfilled()))
+        a[0].append('top_pq_fill ' + str(self.room_pq.top().filled()))
+        a[0].append('top_pq_type ' + self.room_pq.top().get_type())
+        b = [[' => ']]
         for room in self.room_list:
-            a[0].append(room.name + ' ' + str(room.teachers - len(room.teachers_alloted)))
+            b[0].append(room.name + ' ' + str(room.teachers - len(room.teachers_alloted)))
         a = Tabular(a)
-        return a.__str__()
+        b = Tabular(b)
+        return a.__str__() + '\n' + b.__str__() + '\n'
 
     def __lt__(self,obj):
         self_top = self.room_pq.top()

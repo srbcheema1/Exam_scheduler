@@ -8,7 +8,7 @@ from srblib import SrbJson
 from srblib import Tabular
 from srblib import debug
 
-from .priority_queue import PriorityQueue
+from .priority_queue import PriorityQueue, Queue
 from .session import Session
 from .teacher import Teacher
 from .util import randomize, fabricate, fabricate_adv
@@ -84,7 +84,7 @@ class Scheduler:
         session_list = Session.get_sessions(self.schedule_list,self.room_list,self.workratio)
 
         # for scheduling reserved using -r option
-        self.schedule_reserved(teachers_list,session_list)
+        self.schedule_reserved_random(teachers_list,session_list)
 
         # fake run
         self.generate_duties(teachers_list,session_list)
@@ -124,7 +124,11 @@ class Scheduler:
             for _ in range(teacher.duties):
                 session = session_pq.pop()
                 while(session.name in teacher.alloted_res or (self.adv and session.base in teacher.alloted_base)):
-                    if(self.debug): print('skipped session\n',session)
+                    if(self.debug):
+                        if not session.name in teacher.alloted_res:
+                            print('same day ',end='')
+                        print('skipped session')
+                        print(session)
                     done_list.append(session)
                     session = session_pq.pop()
 
@@ -143,7 +147,7 @@ class Scheduler:
             if(self.debug):print(teacher)
             if(self.debug):print('debug_how',debug_how)
             if(self.debug):debug_pq(session_pq)
-            if(self.debug):print()
+            if(self.debug):print('\n')
 
 
 
@@ -245,6 +249,28 @@ class Scheduler:
                     done_list.append(teacher)
             for teacher in done_list:
                 teachers_pq.push(teacher)
+
+
+    def schedule_reserved_random(self,teachers_list,session_list):
+        '''
+        this res is triggered using -r, it will be alloted randomly
+        there is another way, that is using creating a RES room in roomlist (not recommended)
+        both differ by name Res for this one RES for that one
+
+            reason for not being recommended theh roomlist way of reserving:
+                1. unequal distribution of reserved seats
+                2. less credits for reserved
+                3. makes priority queue difficult to schedule if reserved room contain more teachers than other rooms
+        '''
+        teachers_list_res = Teacher.get_teachers(self.teachers_list,self.workratio) # create totally new one
+        teachers_reserved_q = Queue(randomize(teachers_list_res,self.seed+1))
+        for session in session_list: # reserve
+            for j in range(self.reserved):
+                teacher = teachers_reserved_q.pop()
+                teachers_reserved_q.push(teacher)
+                teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
+                teachers_list[teacher.idd-2].alloted_res.add(session.name)
+                teachers_list[teacher.idd-2]._credits += self.workratio.credits_calc(teacher.rank) / 2 # should get half credits for reserved seat   
 
 
     def schedule_reserved(self,teachers_list,session_list):
