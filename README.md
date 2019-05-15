@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/srbcheema1/exam_scheduler.svg?branch=master)](https://travis-ci.org/srbcheema1/exam_scheduler)
 [![HitCount](http://hits.dwyl.io/srbcheema1/exam_scheduler.svg)](http://hits.dwyl.io/srbcheema1/exam_scheduler)
 
-**exam_scheduler** is a commandline tool to produce teacher-duty schedule in examination for a school/college.
+**exam_scheduler** is a commandline tool to produce teacher-duty schedule in examination for a school/college. It also acts as library-cum-backbone for [ExamScheduler](https://srbcheema1.github.io/ExamScheduler/) a web-based tool.
 
 
 ### Installation
@@ -64,31 +64,11 @@ python3 setup.py sdist
 
 - schedule_list - A 2D matrix includeing relation between a session and a room, value is 'Y' if room is required on particular session.
 
+- work_ratio - Includes rank and work_ratio as compulsory attributes. Other optional attributes may follow.
 
-### Config files
+By default it will automtically pick excel files from working-directory OR `input` folder containing `room_list`,`teachers_list`,`schedule_list` and `work_ratio` in their names.
 
-- config.json - includes paths for input files in json format. default path ~/.config/exam_scheduler/config.json
-```
-{
-    "room_list": "/home/srb/programs/exam_scheduler/input/room_list.xlsx",
-    "teachers_list": "/home/srb/programs/exam_scheduler/input/teachers_list.xlsx",
-    "schedule_list": "/home/srb/programs/exam_scheduler/input/schedule_list.xlsx"
-}
-```
-By default it will automtically pick excel files from working-directory OR input-folder containing `room_list`,`teachers_list`,`schedule_list` in their names.
-
-- work_ratio.json - includes working ratio for different ranks with respect to rank `1`.
-```
-{
-    "1": 100,
-    "2": 150,
-    "3": 200,
-    "4": 250,
-    "5": 300
-}
-```
-This means if rank 1 will work for 100 units then rank 3 will work 200 units, simply rank 2 will work twice than rank 1.
-
+For more instructions please visit our [help page](https://srbcheema1.github.io/ExamScheduler/#/Help).
 
 ### Usage
 ```
@@ -105,7 +85,6 @@ optional arguments:
   -r RESERVED, --reserved RESERVED
                         reserved number of seats for each session
   -d, --debug           print debug info
-  -i, --info            print info in excel
   -vr VR                verify room_list file
   -vs VS                verify schedule_list file
   -vt VT                verify teachers_list file
