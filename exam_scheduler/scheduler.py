@@ -8,6 +8,7 @@ from srblib import SrbJson
 from srblib import Tabular
 from srblib import debug
 
+from .constants import max_adv
 from .priority_queue import PriorityQueue, Queue
 from .session import Session
 from .teacher import Teacher
@@ -26,7 +27,7 @@ class Scheduler:
         self.work_ratio = Scheduler._verified_file(work_ratio)
         self.workratio = None
         # self._configure_paths() # called manually
-        self.adv = True # used in round_n_robin for advanced algo.
+        self.adv = max_adv # used in round_n_robin for advanced algo.
 
     def _configure_paths(self):
         '''
@@ -75,7 +76,7 @@ class Scheduler:
             self._schedule(output_path)
         except:
             Colour.print('Turning off adv-algo',Colour.YELLOW)
-            self.adv = False
+            self.adv = 0
             self._schedule(output_path)
 
     def _schedule(self,output_path):
@@ -99,7 +100,7 @@ class Scheduler:
     def round_n_robin(self,teachers_list,session_list):
         '''
         Srb's round-n-robin algorithm
-        self.adv means advance, it will not allow teachers in same session
+        self.adv means advance, it will not allow teachers in same session for that number of times
         '''
         sorted_teachers_list = fabricate(teachers_list[:],self.seed)
         sorted_teachers_list.sort(key=lambda x: int(x.rank))
@@ -123,9 +124,11 @@ class Scheduler:
             done_list = []
             for _ in range(teacher.duties):
                 session = session_pq.pop()
-                while(session.name in teacher.alloted_res or (self.adv and session.base in teacher.alloted_base)):
+                adv = self.adv
+                while(session.name in teacher.alloted_res or (adv > 0 and  session.base in teacher.alloted_base)):
+                    adv -= 1
                     if(self.debug):
-                        if not session.name in teacher.alloted_res:
+                        if session.base in teacher.alloted_base:
                             print('same day ',end='')
                         print('skipped session')
                         print(session)
@@ -174,6 +177,8 @@ class Scheduler:
         for session in session_list:
             matrix[0].append(session.name)
             for room in session.room_list:
+                if room.reserved:
+                    continue
                 if room.get_type() in tmap:
                     tmap[room.get_type()] += 1
                 else:
@@ -222,7 +227,7 @@ class Scheduler:
         for key in sorted(tmap):
             matrix.append(['',key,tmap[key]])
 
-        if not self.adv:
+        if self.adv < max_adv:
             matrix.extend([[],[],['','WARNING:',' avd-algo turned off']])
             matrix.extend([['','','You may get teacher duty twice in a day']])
             matrix.extend([['','','Please report this to srbcheema2@gmail.com']])
@@ -239,6 +244,7 @@ class Scheduler:
         for session in session_list:
             done_list = []
             for room in session.room_list:
+                if room.reserved: continue # continue for reserved rooms
                 for _ in range(room.teachers):
                     teacher = teachers_pq.pop()
                     while session.name in teacher.alloted_res: # teacher should not get sametime res and room
@@ -262,46 +268,22 @@ class Scheduler:
                 2. less credits for reserved
                 3. makes priority queue difficult to schedule if reserved room contain more teachers than other rooms
         '''
-        teachers_list_res = Teacher.get_teachers(self.teachers_list,self.workratio) # create totally new one
-        teachers_reserved_q = Queue(randomize(teachers_list_res,self.seed+1))
+        teachers_reserved_q = Queue(randomize(teachers_list,self.seed+1))
         for session in session_list: # reserve
-            for j in range(self.reserved):
-                teacher = teachers_reserved_q.pop()
-                teachers_reserved_q.push(teacher)
-                teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
-                teachers_list[teacher.idd-2].alloted_res.add(session.name)
-                teachers_list[teacher.idd-2]._credits += self.workratio.credits_calc(teacher.rank) / 2 # should get half credits for reserved seat   
+            for room in session.room_list:
+                if room.reserved:
+                    for _ in range(room.teachers):
+                        teacher = teachers_reserved_q.pop()
+                        while teacher.rank == 0:
+                            teacher = teachers_reserved_q.pop()
+                        teachers_reserved_q.push(teacher)
+                        teacher.alloted[session.name] = room.name
+                        teacher.alloted_res.add(session.name)
+                        teacher._credits += self.workratio.credits_calc(teacher.rank) / 2
+                        room.teachers_alloted.append(teacher)
+                        session.remaining -= 1
+            session.room_pq.sync()
 
-
-    def schedule_reserved(self,teachers_list,session_list):
-        '''
-        this res is triggered using -r, it will be alloted according to rank
-        smaller ranks will get more chances to be reserved
-        there is another way, that is using creating a RES room in roomlist (not recommended)
-        both differ by name Res for this one RES for that one
-
-            reason for not being recommended theh roomlist way of reserving:
-                1. equal credits for normal and reserved room
-                2. unequal distribution of reserved seats
-                3. no priority to better rank teachers.
-                4. makes priority queue difficult to schedule if reserved room contain more teachers than other rooms
-        '''
-        teachers_list_res = Teacher.get_teachers(self.teachers_list,self.workratio) # create totally new one
-        for i in range(len(teachers_list_res)):
-            teachers_list_res[i]._credits = 99999 if teachers_list_res[i].rank == 0 else teachers_list_res[i].rank
-        teachers_reserved_pq = PriorityQueue(randomize(teachers_list_res,self.seed+1))
-        max_rank = Scheduler._get_max_rank(teachers_list)
-        for session in session_list: # reserve
-            done_list = []
-            for j in range(self.reserved):
-                teacher = teachers_reserved_pq.pop()
-                teacher._credits += self.workratio.credits_calc(max_rank-teacher.rank + 1)
-                done_list.append(teacher)
-                teachers_list[teacher.idd-2].alloted[session.name] = 'Res'
-                teachers_list[teacher.idd-2].alloted_res.add(session.name)
-                teachers_list[teacher.idd-2]._credits += self.workratio.credits_calc(teacher.rank) / 2 # should get half credits for reserved seat
-            for teacher in done_list:
-                teachers_reserved_pq.push(teacher)
 
 
     @staticmethod

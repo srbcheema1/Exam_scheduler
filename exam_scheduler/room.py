@@ -24,6 +24,9 @@ class Room:
         self.teachers_alloted = []
         self._credits = -1 # weitage of room
         self.workratio = None # WorkRatio object
+        self.reserved = False
+        if len(str(self.name)) > 2 and str(self.name)[0:3] == 'Res':
+            self.reserved = True
 
     def unfilled(self):
         return self.teachers - len(self.teachers_alloted)

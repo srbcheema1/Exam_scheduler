@@ -12,6 +12,9 @@ class PriorityQueue:
         else:
             self._data = []
 
+    def sync(self):
+        heapq.heapify(self._data)
+
     def push(self, item):
         heapq.heappush(self._data, (self.key(item), item))
         self.empty = False
