@@ -12,7 +12,7 @@ from .verifier import Verifier
 class Session:
     def __init__(self,name,room_list):
         self.name = name
-        self.base = re.sub(r'\((.*?)\)','',name)
+        self.base = Session.get_base(name)
         batch = re.search(r'\((.*?)\)',name).group(1)
         self.batch = batch if batch else ""
 
@@ -46,6 +46,10 @@ class Session:
             else:
                 return self.remaining > obj.remaining
         return self_top < obj_top
+
+    @staticmethod
+    def get_base(name):
+        return re.sub(r'\((.*?)\)','',name)
 
     @staticmethod
     def get_sessions(matrix,room_data,workratio):

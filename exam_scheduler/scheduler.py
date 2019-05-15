@@ -26,7 +26,6 @@ class Scheduler:
         self.schedule_list = Scheduler._verified_file(schedule_list)
         self.work_ratio = Scheduler._verified_file(work_ratio)
         self.workratio = None
-        # self._configure_paths() # called manually
         self.adv = max_adv # used in round_n_robin for advanced algo.
 
     def _configure_paths(self):
@@ -71,13 +70,21 @@ class Scheduler:
 
 
 
-    def schedule(self,output_path):
+    def try_schedule(self, output_path):
         try:
             self._schedule(output_path)
+            return True
         except:
-            Colour.print('Turning off adv-algo',Colour.YELLOW)
-            self.adv = 0
-            self._schedule(output_path)
+            return False
+
+    def schedule(self,output_path):
+        self.adv = max_adv
+        while self.adv > 0:
+            if self.try_schedule(output_path):
+                return
+            self.adv -= 1
+            Colour.print('Using adv as '+str(self.adv),Colour.YELLOW)
+        self._schedule(output_path)
 
     def _schedule(self,output_path):
         self.workratio = WorkRatio(self.work_ratio)
@@ -153,11 +160,9 @@ class Scheduler:
             if(self.debug):print('\n')
 
 
-
-
     def dump_output(self,teachers_list,session_list,output_path):
         matrix = [["Name of Faculty Member","Info"]]
-        if debug: matrix[0].extend(['rank','total','res','credits']) # srbdebug
+        if debug: matrix[0].extend(['_rank','_total','_res','_credits']) # srbdebug
 
         dmap = {} # map to contain count of avg duties of some rank
         rmap = {} # map to contain count of teachers of some rank
@@ -186,25 +191,37 @@ class Scheduler:
 
         matrix[0].append("Total")
         matrix[0].append("mail")
+        same_day_duties = self._get_same_day_multiple_duties(teachers_list)
+        if(same_day_duties): matrix[0].append("_s_d_m_d")
+
 
         for teacher in teachers_list:
             teachers_row = [teacher.name,teacher.info]
             if teacher.duties != len(teacher.alloted) - len(teacher.alloted_res):
                 print('ERROR: teacher unable to get enough slots as anticipated')
                 print(teacher)
-                sys.exit(1)
+                raise Exception('ERROR: teacher unable to get enough slots as anticipated')
             if debug:
                 teachers_row.extend([
                     teacher.rank,
                     len(teacher.alloted),
                     len(teacher.alloted_res),
-                    int(teacher._credits)
+                    int(teacher._credits),
                 ])
             for session in session_list:
                 if session.name in teacher.alloted: teachers_row.append(teacher.alloted[session.name])
                 else: teachers_row.append('-')
             teachers_row.append(len(teacher.alloted))
             teachers_row.append(teacher.mail)
+            if(same_day_duties):
+                same_day_duties_t = 0 # compute same day duties per teacher
+                sess_set = set()
+                for session_name in teacher.alloted.keys():
+                    if Session.get_base(session_name) in sess_set:
+                        same_day_duties_t += 1
+                        continue
+                    sess_set.add(Session.get_base(session_name))
+                teachers_row.append(same_day_duties_t)
             matrix.append(teachers_row)
 
         lmap = json.dumps(rmap,indent=3,sort_keys=True)
@@ -227,10 +244,16 @@ class Scheduler:
         for key in sorted(tmap):
             matrix.append(['',key,tmap[key]])
 
-        if self.adv < max_adv:
-            matrix.extend([[],[],['','WARNING:',' avd-algo turned off']])
-            matrix.extend([['','','You may get teacher duty twice in a day']])
-            matrix.extend([['','','Please report this to srbcheema2@gmail.com']])
+        if same_day_duties > 0:
+            Colour.print('Got '+str(same_day_duties)+' same-day-duties',Colour.YELLOW)
+            matrix.extend([[],[],['','WARNING:','Adv-algo value was '+str(self.adv)]])
+            matrix.extend([['','','You may get teacher duty multiple in a day']])
+            matrix.extend([['','','We got '+str(same_day_duties) + ' such cases']])
+            matrix.extend([['','','Please visit _s_d_m_d(same-day-multiple-duties) column for number of such cases per teacher']])
+
+        matrix.extend([[],[],['','Help:','In case help required please visit help section on website']])
+        matrix.extend([['','','In case of unsatisfactory results please contact srbcheema2@gmail.com']])
+        matrix.extend([[],[],['','','a srbcheema1 Production']])
 
         sheet = Tabular(matrix)
         sheet.write_xls(output_path)
@@ -279,11 +302,11 @@ class Scheduler:
                         teachers_reserved_q.push(teacher)
                         teacher.alloted[session.name] = room.name
                         teacher.alloted_res.add(session.name)
+                        teacher.alloted_base.add(session.base)
                         teacher._credits += self.workratio.credits_calc(teacher.rank) / 2
                         room.teachers_alloted.append(teacher)
                         session.remaining -= 1
             session.room_pq.sync()
-
 
 
     @staticmethod
@@ -303,4 +326,20 @@ class Scheduler:
             max_rank = max(max_rank,teacher.rank)
         return max_rank
 
+    def _get_same_day_multiple_duties(self,teachers_list):
+        same_day_duties = 0
+        for teacher in teachers_list:
+            same_day_duties_t = 0 # compute same day duties per teacher
+            teacher_satisfied = True
+            sess_set = set()
+            for session_name in teacher.alloted.keys():
+                if Session.get_base(session_name) in sess_set:
+                    same_day_duties_t += 1
+                    teacher_satisfied = False
+                    continue
+                sess_set.add(Session.get_base(session_name))
+            if not teacher_satisfied:
+                if(self.debug): print(teacher)
+            same_day_duties += same_day_duties_t
+        return same_day_duties
 
