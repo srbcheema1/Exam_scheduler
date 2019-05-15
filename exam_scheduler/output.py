@@ -37,7 +37,7 @@ class Output:
 
     @staticmethod
     def __makebody(data):
-        infocols = ['Info','Name of Faculty Member','Total','mail','_rank','_total','_res','_credits','_s_d_m_d']
+        infocols = ['Info','Name of Faculty Member','Total','mail','_rank','_total','_res','_credits','s_d_m_d']
         duties = ''
         for i in range(len(data[0])):
             print(data[0][i])

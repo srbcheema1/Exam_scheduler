@@ -192,7 +192,7 @@ class Scheduler:
         matrix[0].append("Total")
         matrix[0].append("mail")
         same_day_duties = self._get_same_day_multiple_duties(teachers_list)
-        if(same_day_duties): matrix[0].append("_s_d_m_d")
+        if(same_day_duties): matrix[0].append("s_d_m_d")
 
 
         for teacher in teachers_list:
@@ -249,7 +249,7 @@ class Scheduler:
             matrix.extend([[],[],['','WARNING:','Adv-algo value was '+str(self.adv)]])
             matrix.extend([['','','You may get teacher duty multiple in a day']])
             matrix.extend([['','','We got '+str(same_day_duties) + ' such cases']])
-            matrix.extend([['','','Please visit _s_d_m_d(same-day-multiple-duties) column for number of such cases per teacher']])
+            matrix.extend([['','','Please visit s_d_m_d(same-day-multiple-duties) column for number of such cases per teacher']])
 
         matrix.extend([[],[],['','Help:','In case help required please visit help section on website']])
         matrix.extend([['','','In case of unsatisfactory results please contact srbcheema2@gmail.com']])
@@ -293,6 +293,15 @@ class Scheduler:
         '''
         teachers_reserved_q = Queue(randomize(teachers_list,self.seed+1))
         for session in session_list: # reserve
+            for _ in range(self.reserved): # fixed reserves per day (only for commanline users)
+                teacher = teachers_reserved_q.pop()
+                while teacher.rank == 0:
+                    teacher = teachers_reserved_q.pop()
+                teachers_reserved_q.push(teacher)
+                teacher.alloted[session.name] = '_Res'
+                teacher.alloted_res.add(session.name)
+                teacher.alloted_base.add(session.base)
+                teacher._credits += self.workratio.credits_calc(teacher.rank) / 2
             for room in session.room_list:
                 if room.reserved:
                     for _ in range(room.teachers):
