@@ -8,7 +8,7 @@ from srblib import SrbJson
 from srblib import Tabular
 from srblib import debug
 
-from .constants import max_adv
+from .constants import max_adv, seed_val_var
 from .priority_queue import PriorityQueue, Queue
 from .session import Session
 from .teacher import Teacher
@@ -73,17 +73,26 @@ class Scheduler:
     def try_schedule(self, output_path):
         try:
             self._schedule(output_path)
+            Colour.print('Final adv value is '+str(self.adv),Colour.YELLOW)
+            Colour.print('Final seed value is '+str(self.seed),Colour.YELLOW)
             return True
         except:
             return False
 
     def schedule(self,output_path):
         self.adv = max_adv
-        while self.adv > 0:
+        seed = self.seed
+        while self.adv >= 0:
+            Colour.print('Trying adv as '+str(self.adv),Colour.YELLOW)
+            for i in range(seed,seed + seed_val_var):
+                self.seed = i
+                if self.try_schedule(output_path):
+                    return
+            self.seed = seed-1
             if self.try_schedule(output_path):
                 return
             self.adv -= 1
-            Colour.print('Using adv as '+str(self.adv),Colour.YELLOW)
+        self.seed = seed
         self._schedule(output_path)
 
     def _schedule(self,output_path):
