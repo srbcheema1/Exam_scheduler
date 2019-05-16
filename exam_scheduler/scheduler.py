@@ -9,7 +9,7 @@ from srblib import Tabular
 from srblib import debug
 
 from .constants import max_adv, seed_val_var
-from .priority_queue import PriorityQueue, Queue
+from .priority_queue import PriorityQueue, Queue, EmptyQueue
 from .session import Session
 from .teacher import Teacher
 from .util import randomize, fabricate, fabricate_adv
@@ -76,7 +76,7 @@ class Scheduler:
             Colour.print('Final adv value is '+str(self.adv),Colour.YELLOW)
             Colour.print('Final seed value is '+str(self.seed),Colour.YELLOW)
             return True
-        except:
+        except EmptyQueue:
             return False
 
     def schedule(self,output_path):
