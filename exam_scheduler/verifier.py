@@ -220,6 +220,47 @@ class Compiler:
 
 
     @staticmethod
+    @safefun
+    def compile_output_file(matrix):
+        r = Response()
+        header = matrix[0]
+        cols = len(header)
+
+        if(cols < 4):
+            r.addMessage("Error: Insufficient Data")
+            r.addMessage("In output_file : " + str(1) + " : ")
+            r.addMessage("Too few columns, require at least 4 columns for teachers_name and Info, Total, mails")
+            r.addMessage("Found " + str(cols) + " cols")
+            r.addMessage("")
+            return r
+
+
+        infocols = ['Info','Name of Faculty Member','Total','mail']
+        missing = []
+        for infocol in infocols:
+            if not infocol in header:
+                missing.append(infocol)
+        if(len(missing)>0):
+            r.addMessage("Error: Insufficient Data")
+            r.addMessage("In output_file : " + str(1) + " : ")
+            r.addMessage("Missing cols : " + ' '.join(missing))
+            r.addMessage("")
+            return r
+
+        tmatrix = Tabular(matrix)
+        for i,row in enumerate(tmatrix):
+            if not row['mail']:
+                continue
+            if not '@' in row['mail']:
+                r.addMessage("Error: Bad email address")
+                r.addMessage("In output_file : " + str(i) + " : " + "mail")
+                r.addMessage("Found " + str(row['mail']) + "")
+                r.addMessage("")
+
+        return r
+
+
+    @staticmethod
     def crosscompile(teachers_list,room_list,schedule_list,work_ratio):
         '''
         only to be called after compilation is done(all files are OK)
@@ -297,6 +338,11 @@ class Verifier:
     @dieifbad
     def verify_work_ratio(file_path):
         return Compiler.compile_work_ratio(file_path)
+
+    @staticmethod
+    @dieifbad
+    def verify_output_file(file_path):
+        return Compiler.compile_output_file(file_path)
 
     @staticmethod
     @dieifbad

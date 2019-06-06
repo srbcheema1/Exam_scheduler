@@ -58,8 +58,6 @@ class Response:
         # if len(self.__message) > 0:
             # ans += "[ERROR]\n\n"
         ans += '\n'.join(self.__message)
-        # if len(self.__message) > 0:
-            # ans += "\n[NOTE] Row nums are not exact, Empty rows are not counted\n"
         return ans
 
     def __bool__(self):

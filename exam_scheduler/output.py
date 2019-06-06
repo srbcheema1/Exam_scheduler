@@ -1,7 +1,5 @@
 from srblib import Tabular, Email
 
-from .configurations import config_json
-
 mainbody = '''Hi {name},
 
 You have been alloted the following duties during exams.
@@ -17,13 +15,41 @@ Team ExamScheduler
 
 class Output:
     def __init__(self,filename):
-        self.mat = Tabular(filename)
+        '''
+        belives that file is already compiled
+        '''
+        self.mat = Tabular()
+        self.mat.load_xls(filename,strict=True)
 
-    def mail(self):
+    def json(self):
+        debugcols = ['_rank','_total','_res','_credits','s_d_m_d']
+        infocols = ['Info','Name of Faculty Member','Total','mail']
+        header = []
+        for col in self.mat[0]:
+            if col in debugcols:
+                continue
+            header.append(col)
+
+        ret_json = []
+        for row in self.mat:
+            teacher = dict()
+            teacher['duties'] = dict()
+            for head in header:
+                if head in infocols:
+                    teacher[head] = row[head]
+                elif row[head] and row[head] != '-':
+                    teacher['duties'][head] = row[head]
+            ret_json.append(teacher)
+        return ret_json
+
+
+
+    def mail(self, email, password):
         subject = "Alloted Duties In examination"
         header = self.mat[0]
         if not 'mail' in header:
-            return
+            return 0
+        sent = 0
         for teacher in self.mat:
             if teacher['mail']:
                 data = [[],[]]
@@ -32,7 +58,12 @@ class Output:
                         continue
                     data[0].append(header[i])
                     data[1].append(teacher[i])
-                Output.__send_email(teacher['mail'],Output.__makebody(data),subject)
+                try:
+                    Output.__send_email(email,password,teacher['mail'],Output.__makebody(data),subject)
+                    sent += 1
+                except:
+                    pass
+        return sent
 
 
     @staticmethod
@@ -49,10 +80,10 @@ class Output:
         return body
 
     @staticmethod
-    def __send_email(toaddr, body='', subject=''):
+    def __send_email(email, password, toaddr, body='', subject=''):
         mail = Email()
-        mail.fromaddr = config_json['email']
-        mail.password = config_json['password']
+        mail.fromaddr = email
+        mail.password = password
         mail.toaddr = toaddr
         mail.subject = subject
         mail.body = body
