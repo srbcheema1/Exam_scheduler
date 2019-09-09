@@ -80,19 +80,21 @@ class Scheduler:
             return False
 
     def schedule(self,output_path):
-        self.adv = max_adv
-        seed = self.seed
-        while self.adv >= 0:
-            Colour.print('Trying adv as '+str(self.adv),Colour.YELLOW)
-            for i in range(seed,seed + seed_val_var):
-                self.seed = i
-                if self.try_schedule(output_path):
-                    return
-            self.seed = seed-1
-            if self.try_schedule(output_path):
-                return
-            self.adv -= 1
-        self.seed = seed
+        _seed = self.seed # make a copy of it
+        if True:  # change it to false if you want normal way
+            while self.adv >= 1:
+                Colour.print('Trying adv as '+str(self.adv),Colour.YELLOW)
+                for self.seed in range(_seed,_seed + seed_val_var):
+                    if self.try_schedule(output_path):
+                        return
+                self.adv -= 1
+
+        # last hope default case
+        self.adv = 0 # can change it to tweek and debug
+        self.seed = _seed
+        Colour.print('Running in base Case', Colour.CYAN)
+        Colour.print('Final adv value is ' + str(self.adv), Colour.YELLOW)
+        Colour.print('Final seed value is ' + str(self.seed), Colour.YELLOW)
         self._schedule(output_path)
 
     def _schedule(self,output_path):
@@ -136,11 +138,19 @@ class Scheduler:
             for room in session.room_list:
                 debug_how += room.teachers
 
+        total_duties = debug_how
+        def calc_adv(left): # calculate local adv value
+            if left > total_duties//10:
+                return max(self.adv,0)
+            if left > total_duties//50:
+                return max(self.adv-1,0)
+            return max(self.adv-2,0)
+
         for teacher in sorted_teachers_list:
             done_list = []
             for _ in range(teacher.duties):
                 session = session_pq.pop()
-                adv = self.adv
+                adv = calc_adv(debug_how)
                 while(session.name in teacher.alloted_res or (adv > 0 and  session.base in teacher.alloted_base)):
                     adv -= 1
                     if(self.debug):
@@ -164,6 +174,7 @@ class Scheduler:
             for session in done_list:
                 if session.remaining > 0: session_pq.push(session)
             if(self.debug):print(teacher)
+            if(self.debug and adv < self.adv):print('adv value',self.adv)
             if(self.debug):print('debug_how',debug_how)
             if(self.debug):debug_pq(session_pq)
             if(self.debug):print('\n')
@@ -294,6 +305,7 @@ class Scheduler:
         this res is triggered using -r, it will be alloted randomly
         there is another way, that is using creating a RES room in roomlist (not recommended)
         both differ by name Res for this one RES for that one
+        In output commandline rooms will be _Res and room_list rooms will be Res
 
             reason for not being recommended theh roomlist way of reserving:
                 1. unequal distribution of reserved seats
@@ -302,7 +314,7 @@ class Scheduler:
         '''
         teachers_reserved_q = Queue(randomize(teachers_list,self.seed+1))
         for session in session_list: # reserve
-            for _ in range(self.reserved): # fixed reserves per day (only for commanline users)
+            for _ in range(self.reserved): # fixed reserves per day (only for commanline users) '_Res'
                 teacher = teachers_reserved_q.pop()
                 while teacher.rank == 0:
                     teacher = teachers_reserved_q.pop()
@@ -311,7 +323,7 @@ class Scheduler:
                 teacher.alloted_res.add(session.name)
                 teacher.alloted_base.add(session.base)
                 teacher._credits += self.workratio.credits_calc(teacher.rank) / 2
-            for room in session.room_list:
+            for room in session.room_list: # Res room name way (only using file input), 'Res'
                 if room.reserved:
                     for _ in range(room.teachers):
                         teacher = teachers_reserved_q.pop()

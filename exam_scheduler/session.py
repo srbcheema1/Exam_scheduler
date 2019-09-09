@@ -85,7 +85,8 @@ class Session:
                     else:
                         raise Exception('Room ' +room+ ' not present in rooms file')
 
-            temp = Session(row[0], room_list)
-            ret.append(temp)
+            if (len(room_list) > 0): # dont consider empty session
+                temp = Session(row[0], room_list)
+                ret.append(temp)
 
         return ret
