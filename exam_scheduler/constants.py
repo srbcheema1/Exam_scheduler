@@ -1,2 +1,1 @@
-max_adv = 9
-seed_val_var = 8
+max_adv = 10

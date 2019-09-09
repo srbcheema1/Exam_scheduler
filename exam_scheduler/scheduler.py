@@ -8,7 +8,7 @@ from srblib import SrbJson
 from srblib import Tabular
 from srblib import debug
 
-from .constants import max_adv, seed_val_var
+from .constants import max_adv
 from .priority_queue import PriorityQueue, Queue, EmptyQueue
 from .session import Session
 from .teacher import Teacher
@@ -84,10 +84,10 @@ class Scheduler:
         if True:  # change it to false if you want normal way
             while self.adv >= 1:
                 Colour.print('Trying adv as '+str(self.adv),Colour.YELLOW)
-                for self.seed in range(_seed,_seed + seed_val_var):
+                for self.seed in range(_seed,_seed + (2 if self.adv > 3 else 3)):
                     if self.try_schedule(output_path):
                         return
-                self.adv -= 1
+                self.adv -= 3 if self.adv > 8 else 2 if self.adv > 4 else 1
 
         # last hope default case
         self.adv = 0 # can change it to tweek and debug
