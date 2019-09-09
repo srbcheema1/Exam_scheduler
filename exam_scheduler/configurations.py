@@ -24,6 +24,16 @@ if os.path.exists(abs_path('input/')):
         elif not _default_work_ratio and 'work_ratio' in fname:
             _default_work_ratio = abs_path(fname)
 
+for fname in os.listdir(abs_path('./')):
+    if not _default_room_list and 'room_list' in fname:
+        _default_room_list = abs_path(fname)
+    elif not _default_teachers_list and 'teachers_list' in fname:
+        _default_teachers_list = abs_path(fname)
+    elif not _default_schedule_list and 'schedule_list' in fname:
+        _default_schedule_list = abs_path(fname)
+    elif not _default_work_ratio and 'work_ratio' in fname:
+        _default_work_ratio = abs_path(fname)
+
 if on_ci and os.path.exists(abs_path('.ci/')):
     for fname in os.listdir(abs_path('.ci/')):
         fname = '.ci/' + fname
@@ -35,16 +45,6 @@ if on_ci and os.path.exists(abs_path('.ci/')):
             _default_schedule_list = abs_path(fname)
         elif not _default_work_ratio and 'work_ratio' in fname:
             _default_work_ratio = abs_path(fname)
-
-for fname in os.listdir(abs_path('./')):
-    if not _default_room_list and 'room_list' in fname:
-        _default_room_list = abs_path(fname)
-    elif not _default_teachers_list and 'teachers_list' in fname:
-        _default_teachers_list = abs_path(fname)
-    elif not _default_schedule_list and 'schedule_list' in fname:
-        _default_schedule_list = abs_path(fname)
-    elif not _default_work_ratio and 'work_ratio' in fname:
-        _default_work_ratio = abs_path(fname)
 
 _config_template = \
 {
@@ -59,5 +59,5 @@ config_json = SrbJson(config_file_path,_config_template)
 for var_name in ['room_list','teachers_list','schedule_list','work_ratio']:
     if config_json[var_name] and not os.path.isfile(config_json[var_name]):
         config_json[var_name] = None
-    if not config_json[var_name]:
+    if _config_template[var_name]:
         config_json[var_name] = _config_template[var_name]
