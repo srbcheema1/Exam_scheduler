@@ -59,10 +59,14 @@ python3 setup.py sdist
 
 
 - room_list - includes `room-name` and `teachers-required` as compulsory attributes. Other attributes may follow.
+   - `Res` (Case-senstive) is special room name for reserved purposes.
+   - Recommended to be used instead of dummy rooms.
 
 - teachers_list - includes `teacher-name` and `rank` as compulsory attributes. Other attributes may follow.
 
-- schedule_list - A 2D matrix includeing relation between a session and a room, value is 'Y' if room is required on particular session.
+- schedule_list - A 2D matrix includeing relation between a session and a room
+   - value is 'Y' if room is required on particular session.
+   - By default empty cell is treated as 'N'
 
 - work_ratio - Includes rank and work_ratio as compulsory attributes. Other optional attributes may follow.
 
