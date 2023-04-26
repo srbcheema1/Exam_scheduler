@@ -72,6 +72,7 @@ python3 setup.py sdist
 
 By default it will automtically pick excel files from working-directory OR `input` folder containing `room_list`,`teachers_list`,`schedule_list` and `work_ratio` in their names.
 
+### NOTE: the files should be in *xls* format, not in *xlsx* format. For now exam-scheduler is not able to read *xlsx* format
 For more instructions please visit our [help page](https://srbcheema1.github.io/ExamScheduler/#/Help).
 
 ### Usage
@@ -95,10 +96,11 @@ optional arguments:
 ```
 
 ```
-srb@srb-pc:$ exam_scheduler -o result.xlsx
-Using room_list : /home/srb/programs/exam_scheduler/input/room_list.csv
-Using teachers_list : /home/srb/programs/exam_scheduler/input/teachers_list.csv
-Using schedule_list : /home/srb/programs/exam_scheduler/input/schedule_list.csv
+srb@srb-pc:$ exam_scheduler -o result.xls
+Using room_list : /home/srb/programs/exam_scheduler/input/room_list.xls
+Using teachers_list : /home/srb/programs/exam_scheduler/input/teachers_list.xls
+Using schedule_list : /home/srb/programs/exam_scheduler/input/schedule_list.xls
+Using work_ratio : /home/singhsar/srb/extra/testing_exam_scheduler/work_ratio.xls
 Using seed value : 5
 Using reserved value : 0
 rank count : {
